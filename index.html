@@ -258,6 +258,43 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
  #dashboard .task-bottom{font-size:min(11.5px,1.8vh)}
  #dashboard .speak-btn{width:min(40px,6.2vh);font-size:min(20px,3.2vh);border-radius:min(12px,1.9vh)}
 }
+
+/* ── 누르면 읽어 주기: 오늘의 글귀 · 시계 · 오늘의 코디 ── */
+#dashboard .clock-face .date-line{display:flex;align-items:center;justify-content:center;gap:clamp(4px,.55vw,9px);max-width:100%}
+#dashboard .clock-face .clock-speak{flex:none;display:grid;place-items:center;width:clamp(19px,2.1vw,30px);height:clamp(19px,2.1vw,30px);border-radius:50%;background:#fffdfbcc;border:1.5px solid #f2cdda;box-shadow:0 2px 0 #f4dfe7;font-size:clamp(9px,1.05vw,15px);line-height:1;pointer-events:none;font-family:'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif}
+#dashboard .clock-face{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;margin:0;padding:0;border:0;background:none;color:inherit;text-align:center;cursor:pointer;border-radius:16px;-webkit-tap-highlight-color:transparent;transition:transform .12s ease}
+#dashboard .clock-face:active{transform:scale(.985)}
+#dashboard .clock-face:active .time{color:#7a4660}
+#dashboard .clock-face:focus-visible{outline:3px solid #ab6a91;outline-offset:4px}
+#dashboard .greeting{cursor:pointer;border-style:solid;transition:transform .12s ease,background .12s ease,box-shadow .12s ease}
+#dashboard .greeting .quote-speak{position:absolute;top:clamp(-8px,-.9vh,-5px);right:clamp(-7px,-.7vw,-4px);width:clamp(18px,2vw,27px);height:clamp(18px,2vw,27px);display:grid;place-items:center;border-radius:50%;background:#fffdfb;border:1.5px solid #f2cdda;box-shadow:0 2px 0 #f4dfe7;font-size:clamp(9px,1.05vw,14px);line-height:1;font-family:'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif;pointer-events:none}
+#dashboard .greeting:active{background:#fdeef4;box-shadow:none;transform:translateY(1px)}
+#dashboard .greeting:focus-visible{outline:3px solid #ab6a91;outline-offset:3px}
+#dashboard .weather-outfit{display:flex;align-items:center;gap:clamp(5px,.7vw,10px);width:100%;min-width:0;flex:none;padding:clamp(3px,.55vh,7px) clamp(8px,.9vw,13px);border-radius:clamp(9px,1.1vw,14px);background:linear-gradient(100deg,#fff5dd,#ffeef5 62%,#f4ecff);border:1.5px solid #f0d6bd;box-shadow:0 2px 0 #f6e6d2;color:#5a3345;font-weight:850;font-size:clamp(12px,1.32vw,18px);line-height:1.24;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s ease,background .12s ease}
+#dashboard .weather-outfit .outfit-label{flex:none;font-size:.84em;color:#9c5a76;background:#fffdfa;border:1px solid #f2d7c2;border-radius:99px;padding:1px 7px;white-space:nowrap;line-height:1.35}
+#dashboard .weather-outfit .outfit-text{flex:1 1 auto;min-width:0;overflow-wrap:anywhere;word-break:keep-all}
+#dashboard .weather-outfit .outfit-speak{flex:none;font-size:1.02em;opacity:.7;line-height:1;font-family:'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif}
+#dashboard .weather-outfit:active{transform:translateY(1px);background:#ffe7d8;box-shadow:none}
+#dashboard .weather-outfit:focus-visible{outline:3px solid #ab6a91;outline-offset:3px}
+@media (orientation:landscape) and (max-height:700px){
+ #dashboard .weather-outfit{font-size:min(13.5px,2.25vh);gap:5px;padding:min(3px,.55vh) 8px;border-radius:10px;box-shadow:none}
+ #dashboard .weather-outfit .outfit-label{display:none}
+ #dashboard .weather{gap:min(5px,.85vh)}
+ #dashboard .weather .weather-icon{font-size:min(35px,5.7vh)}
+ #dashboard .weather .dayname{font-size:min(21.5px,3.6vh)}
+ #dashboard .weather .weather-type{font-size:min(19.5px,3.1vh)}
+ #dashboard .weather .current-temp{font-size:min(16.5px,2.75vh)}
+ #dashboard .weather .range{font-size:min(23px,3.7vh)}
+ #dashboard .weather .rain{font-size:min(14.5px,2.4vh)}
+ #dashboard .weather .weather-day{gap:min(2px,.4vh)}
+}
+@media (orientation:landscape) and (max-height:520px){
+ #dashboard .weather-outfit{font-size:12px;padding:2px 7px;gap:4px;border-radius:8px}
+}
+@media (orientation:portrait){
+ #dashboard .weather-outfit{font-size:14px;padding:6px 10px;gap:6px}
+}
+
 /* ── 노트북·아이패드 가로(높이 701~820px)에서 시계 카드가 살짝 넘치던 부분 ── */
 @media (orientation:landscape) and (min-height:701px) and (max-height:820px){
  #dashboard .clock{padding-bottom:min(16px,1.5vh)}
@@ -275,12 +312,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <button type="button" id="missionShortcut" class="mission-shortcut"><span id="homeMissionTitle">오늘의 미션</span><strong id="homeMissionTime">남은 시간 확인 중</strong><span id="homeMissionProgress">0 / 4 완료</span><span class="go-mission">미션 하러 가기 ›</span></button>
 <main class="layout">
 <div class="left">
-<section class="panel clock" aria-label="시계와 날짜"><svg class="clock-art bunny" viewBox="-7 -7 134 143" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><g stroke="#b88688" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M30 57C18 43 15 8 29 6c13-2 22 23 24 39M65 46C67 22 79 1 90 9c12 8 0 40-8 49" fill="#fff9ed"/><path d="M31 17c5 5 10 20 12 31M84 19c-5 7-10 21-11 30" stroke="#f3b8c5" stroke-width="7" fill="none"/><ellipse cx="59" cy="91" rx="45" ry="34" fill="#fff9ed"/><path d="M49 101q-9 10-19 6M70 101q9 10 19 6" fill="none"/><path d="M45 79q0-2 0-3m27 3q0-2 0-3" stroke="#6b4b50" stroke-width="4"/><ellipse cx="36" cy="88" rx="8" ry="4" fill="#f5c0ca" stroke="none"/><ellipse cx="80" cy="88" rx="8" ry="4" fill="#f5c0ca" stroke="none"/><path d="M55 86q4-4 8 0l-4 4z" fill="#d68da0"/><path d="M59 90v3m0 0q-5 5-9 0m9 0q5 5 9 0" fill="none"/><path d="M82 49q-13-13-17-4t12 10q-10 13-1 16t11-14q12 11 18 4t-14-10q12-10 5-15t-14 13" fill="#eaa1b8"/><circle cx="85" cy="53" r="4" fill="#ffd8e0"/></g></svg><svg class="clock-art bear" viewBox="-7 -7 134 143" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><g stroke="#b38a72" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="29" cy="44" r="18" fill="#e5ba92"/><circle cx="91" cy="44" r="18" fill="#e5ba92"/><circle cx="29" cy="44" r="9" fill="#f5d4c1" stroke="none"/><circle cx="91" cy="44" r="9" fill="#f5d4c1" stroke="none"/><ellipse cx="60" cy="81" rx="47" ry="39" fill="#eac5a1"/><ellipse cx="60" cy="91" rx="22" ry="16" fill="#fff1dc" stroke="none"/><path d="M43 76v3m34-3v3" stroke="#634b43" stroke-width="4"/><ellipse cx="32" cy="87" rx="8" ry="4" fill="#ebaeb3" stroke="none"/><ellipse cx="88" cy="87" rx="8" ry="4" fill="#ebaeb3" stroke="none"/><path d="M55 86q5-4 10 0l-5 5z" fill="#91685a"/><path d="M60 91v4m0 0q-5 4-9 0m9 0q5 4 9 0" fill="none"/><path d="M60 120c-8-6-22-16-17-25 4-8 14-6 17 1 4-7 14-9 18-1 5 9-10 19-18 25z" fill="#eaa1b8" stroke="#c08091"/></g></svg><div class="clock-sparkles" aria-hidden="true"><span>✧</span><span>♡</span><span>♡</span><span>✧</span></div><div class="date" id="date">날짜 확인 중</div><div class="time-line"><span class="ampm" id="ampm"></span><span class="time" id="time">--:--</span></div><div class="greeting" aria-label="엄마 아빠가 지아에게 전하는 오늘의 마음"><span class="greeting-label">♡ 엄마 아빠가 지아에게 ♡</span><span id="greeting">너는 있는 그대로 소중해.</span></div></section>
+<section class="panel clock" aria-label="시계와 날짜"><svg class="clock-art bunny" viewBox="-7 -7 134 143" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><g stroke="#b88688" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M30 57C18 43 15 8 29 6c13-2 22 23 24 39M65 46C67 22 79 1 90 9c12 8 0 40-8 49" fill="#fff9ed"/><path d="M31 17c5 5 10 20 12 31M84 19c-5 7-10 21-11 30" stroke="#f3b8c5" stroke-width="7" fill="none"/><ellipse cx="59" cy="91" rx="45" ry="34" fill="#fff9ed"/><path d="M49 101q-9 10-19 6M70 101q9 10 19 6" fill="none"/><path d="M45 79q0-2 0-3m27 3q0-2 0-3" stroke="#6b4b50" stroke-width="4"/><ellipse cx="36" cy="88" rx="8" ry="4" fill="#f5c0ca" stroke="none"/><ellipse cx="80" cy="88" rx="8" ry="4" fill="#f5c0ca" stroke="none"/><path d="M55 86q4-4 8 0l-4 4z" fill="#d68da0"/><path d="M59 90v3m0 0q-5 5-9 0m9 0q5 5 9 0" fill="none"/><path d="M82 49q-13-13-17-4t12 10q-10 13-1 16t11-14q12 11 18 4t-14-10q12-10 5-15t-14 13" fill="#eaa1b8"/><circle cx="85" cy="53" r="4" fill="#ffd8e0"/></g></svg><svg class="clock-art bear" viewBox="-7 -7 134 143" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><g stroke="#b38a72" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="29" cy="44" r="18" fill="#e5ba92"/><circle cx="91" cy="44" r="18" fill="#e5ba92"/><circle cx="29" cy="44" r="9" fill="#f5d4c1" stroke="none"/><circle cx="91" cy="44" r="9" fill="#f5d4c1" stroke="none"/><ellipse cx="60" cy="81" rx="47" ry="39" fill="#eac5a1"/><ellipse cx="60" cy="91" rx="22" ry="16" fill="#fff1dc" stroke="none"/><path d="M43 76v3m34-3v3" stroke="#634b43" stroke-width="4"/><ellipse cx="32" cy="87" rx="8" ry="4" fill="#ebaeb3" stroke="none"/><ellipse cx="88" cy="87" rx="8" ry="4" fill="#ebaeb3" stroke="none"/><path d="M55 86q5-4 10 0l-5 5z" fill="#91685a"/><path d="M60 91v4m0 0q-5 4-9 0m9 0q5 4 9 0" fill="none"/><path d="M60 120c-8-6-22-16-17-25 4-8 14-6 17 1 4-7 14-9 18-1 5 9-10 19-18 25z" fill="#eaa1b8" stroke="#c08091"/></g></svg><div class="clock-sparkles" aria-hidden="true"><span>✧</span><span>♡</span><span>♡</span><span>✧</span></div><button type="button" class="clock-face" id="clockBox" aria-label="오늘 날짜와 지금 시각을 소리로 듣기"><span class="date-line"><span class="date" id="date">날짜 확인 중</span><span class="clock-speak" aria-hidden="true">🔊</span></span><div class="time-line"><span class="ampm" id="ampm"></span><span class="time" id="time">--:--</span></div></button><button type="button" class="greeting" id="quoteBox" aria-label="엄마 아빠가 지아에게 전하는 오늘의 마음"><span class="quote-speak" aria-hidden="true">🔊</span><span class="greeting-label">♡ 엄마 아빠가 지아에게 ♡</span><span id="greeting">너는 있는 그대로 소중해.</span></button></section>
 <section class="panel weather" aria-label="오늘과 내일 날씨"><div class="section-top"><h2 class="section-title">우리 동네 날씨</h2><span class="local" title="춘천시 우두1길 70 주변">📍 춘천 우두동</span></div>
 <div class="weather-grid">
 <article class="weather-day"><div class="dayname">오늘 <span class="day-date" id="d0"></span></div><div class="weather-main"><span class="weather-icon" id="i0" aria-hidden="true">🌤️</span><div><div class="weather-type" id="w0">불러오는 중</div><div class="current-temp" id="c0">현재 --°</div></div></div><div class="range"><span class="high"><small>최고</small><span id="hi0">--°</span></span><span class="low"><small>최저</small><span id="lo0">--°</span></span></div><div class="rain" id="r0">☔ 강수확률 --%</div></article>
 <article class="weather-day tomorrow"><div class="dayname">내일 <span class="day-date" id="d1"></span></div><div class="weather-main"><span class="weather-icon" id="i1" aria-hidden="true">🌤️</span><div><div class="weather-type" id="w1">불러오는 중</div><div class="current-temp">예상 날씨</div></div></div><div class="range"><span class="high"><small>최고</small><span id="hi1">--°</span></span><span class="low"><small>최저</small><span id="lo1">--°</span></span></div><div class="rain" id="r1">☔ 강수확률 --%</div></article>
-</div><div class="weather-foot"><span id="weatherStatus" role="status">날씨 연결 중 <a href="https://open-meteo.com/">(Open-Meteo)</a></span></div></section>
+</div><button type="button" class="weather-outfit" id="outfitBtn" aria-label="오늘의 코디 추천 듣기"><span class="outfit-label" aria-hidden="true">오늘 코디</span><span class="outfit-text" id="outfitText">날씨를 불러오면 오늘 코디를 알려 줄게요</span><span class="outfit-speak" aria-hidden="true">🔊</span></button><div class="weather-foot"><span id="weatherStatus" role="status">날씨 연결 중 <a href="https://open-meteo.com/">(Open-Meteo)</a></span></div></section>
 </div>
 <section class="panel tasks" aria-label="가족 할 일"><div class="section-top"><h2 class="section-title">오늘의 할 일 ♡</h2><div class="task-tools"><div class="task-summary"><strong id="remaining">남은 일 6개</strong><strong id="count">완료 0개</strong></div></div></div><div class="progress-info"><span id="cheer">작은 습관, 큰 행복!</span></div><div class="progress-track" id="progress" role="progressbar" aria-label="할 일 완료율" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill" id="bar"></div></div><div class="task-list" id="tasks"></div><div class="task-bottom"><span>🌱 매일 아침 7시에 체크 초기화</span><span id="storageStatus">이 기기에 저장</span></div></section>
 </main>
@@ -637,9 +674,63 @@ let cache=read(WEATHER_KEY),loading=false,lastAttempt=0;
 function describe(code){if(code===null||code===undefined)return ['❔','정보 없음'];if(code===0)return ['☀️','맑음'];if(code===1)return ['🌤️','대체로 맑음'];if(code===2)return ['⛅','구름 조금'];if(code===3)return ['☁️','흐림'];if([45,48].includes(code))return ['🌫️','안개'];if([51,53,55,56,57].includes(code))return ['🌦️','이슬비'];if([61,63,65,66,67].includes(code))return ['🌧️','비'];if([71,73,75,77,85,86].includes(code))return ['🌨️','눈'];if([80,81,82].includes(code))return ['🌧️','소나기'];if([95,96,99].includes(code))return ['⛈️','뇌우'];return ['❔','정보 없음']}
 const num=(v,suffix)=>typeof v==='number'&&Number.isFinite(v)?Math.round(v)+suffix:'--'+suffix;
 function showWeather(c){const today=dayKey(),d=c?.data?.daily,cur=c?.data?.current;let matches=0;for(let i=0;i<2;i++){const k=shiftDay(today,i),j=d?.time?.indexOf(k)??-1;let icon='❔',label='정보 없음';if(j>=0){matches++;[icon,label]=describe(d.weather_code?.[j]);}$('i'+i).textContent=icon;$('w'+i).textContent=label;$('lo'+i).textContent=num(j>=0?d.temperature_2m_min?.[j]:null,'°');$('hi'+i).textContent=num(j>=0?d.temperature_2m_max?.[j]:null,'°');$('r'+i).textContent='☔ 강수확률 '+num(j>=0?d.precipitation_probability_max?.[j]:null,'%')}
- $('c0').textContent='현재 '+num(cur?.time?.startsWith(today)?cur.temperature_2m:null,'°');for(let i=0;i<2;i++){for(const [a,b] of [['D','d'],['I','i'],['W','w'],['Hi','hi'],['Lo','lo'],['R','r']]) $('strip'+a+i).textContent=$(b+i).textContent;} $('stripC0').textContent=$('c0').textContent;return matches;}
+ $('c0').textContent='현재 '+num(cur?.time?.startsWith(today)?cur.temperature_2m:null,'°');for(let i=0;i<2;i++){for(const [a,b] of [['D','d'],['I','i'],['W','w'],['Hi','hi'],['Lo','lo'],['R','r']]) $('strip'+a+i).textContent=$(b+i).textContent;} $('stripC0').textContent=$('c0').textContent;showOutfit(c);return matches;}
 function weatherStatus(label){$('stripStatus').textContent=label+' (Open-Meteo)';$('weatherStatus').replaceChildren(document.createTextNode(label+' '));const a=document.createElement('a');a.href='https://open-meteo.com/';a.textContent='Open-Meteo';a.target='_blank';a.rel='noopener noreferrer';$('weatherStatus').append(a)}
 async function fetchWeather(){if(loading)return;loading=true;lastAttempt=Date.now();$('refresh').disabled=true;weatherStatus('날씨 갱신 중');const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),12000);try{const response=await fetch(url,{signal:controller.signal,cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();if(!Array.isArray(data.daily?.time))throw Error('Invalid forecast');cache={data,at:Date.now()};write(WEATHER_KEY,cache);showWeather(cache);const p=parts(new Date(cache.at));weatherStatus(`${p.hour}:${p.minute} 갱신`);}catch(e){const matches=showWeather(cache);if(matches&&cache?.at){const p=parts(new Date(cache.at));weatherStatus(`연결이 잠깐 끊겼어요. 저장된 ${Number(p.month)}.${Number(p.day)} ${p.hour}:${p.minute} 예보를 보여 드려요`)}else weatherStatus('연결이 안 돼요. 잠시 뒤 다시 해 볼게요')}finally{clearTimeout(timeout);loading=false;$('refresh').disabled=false;}}
+
+// ---------- 누르면 읽어 주기: 오늘의 글귀 · 지금 시각 ----------
+function quoteTextOf(){const el=$('greeting');if(!el)return '';const said=el.getAttribute('aria-label');if(said&&said.trim())return said.trim();return String(el.innerText||el.textContent||'').replace(/\s*\n\s*/g,' ').trim()}
+function speakQuote(){const q=quoteTextOf();if(!q)return;jiaSpeak('엄마 아빠가 지아에게. '+q)}
+function clockSpeech(now=new Date()){
+ const p=parts(now),key=dayKey(now),h=Number(p.hour),m=Number(p.minute),h12=h%12||12,ampm=h<12?'오전':'오후';
+ const minute=m===0?'정각이에요.':`${m}분이에요.`;
+ return `${Number(p.month)}월 ${Number(p.day)}일 ${weekday(key)}요일, ${ampm} ${h12}시 ${minute}`;
+}
+function speakClock(){jiaSpeak(clockSpeech())}
+$('quoteBox').addEventListener('click',speakQuote);
+$('clockBox').addEventListener('click',speakClock);
+// ---------- 오늘의 코디 추천 (최고·최저·현재 기온·강수·날씨 코드) ----------
+const OUTFIT_BANDS=[[4,'🧥 두꺼운 패딩 · 목도리 따뜻하게!'],[9,'🧥 도톰한 코트 · 경량패딩 + 긴팔'],[14,'🧶 얇은 니트 · 자켓 + 긴팔 긴바지'],[19,'👕 얇은 긴팔 · 맨투맨 + 긴바지'],[24,'👕 반팔이나 얇은 긴팔 + 가벼운 겉옷'],[99,'🩳 시원한 반팔 + 반바지']];
+const RAIN_CODES=[51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99],SNOW_CODES=[71,73,75,77,85,86];
+let todayOutfit=null;
+function outfitFor(c){
+ const today=dayKey(),d=c&&c.data&&c.data.daily,cur=c&&c.data&&c.data.current;
+ const j=d&&Array.isArray(d.time)?d.time.indexOf(today):-1;
+ if(j<0)return null;
+ const hi=d.temperature_2m_max?.[j],lo=d.temperature_2m_min?.[j],pop=d.precipitation_probability_max?.[j],code=d.weather_code?.[j];
+ if(typeof hi!=='number'||typeof lo!=='number'||!Number.isFinite(hi)||!Number.isFinite(lo))return null;
+ const curTemp=(cur&&typeof cur.temperature_2m==='number'&&String(cur.time||'').startsWith(today))?cur.temperature_2m:null;
+ const avg=(hi+lo)/2,feel=curTemp===null?avg:avg*.6+curTemp*.4;
+ let main=OUTFIT_BANDS[OUTFIT_BANDS.length-1][1];
+ for(const [limit,text] of OUTFIT_BANDS){if(feel<=limit){main=text;break}}
+ const snow=SNOW_CODES.includes(code),rain=RAIN_CODES.includes(code);
+ const umbrella=(typeof pop==='number'&&pop>=50)||rain||snow;
+ const diurnal=(hi-lo)>=10;
+ const extras=[];
+ if(umbrella)extras.push(snow?'☃️ 눈이 와요, 장갑도 챙겨요!':'☂️ 우산도 챙겨요!');
+ if(diurnal)extras.push('🧣 겉옷 한 겹 더!');
+ return {main,extras,umbrella,diurnal,snow,feel,hi,lo,pop,code};
+}
+function outfitSpeech(o){
+ if(!o)return '지아야, 지금은 날씨를 몰라서 오늘 코디를 고르기 어려워. 날씨가 들어오면 다시 알려 줄게.';
+ const clean=t=>String(t).replace(/\s*·\s*/g,', ').replace(/\s*\+\s*/g,', ');
+ const base=clean(o.main).replace(/\s*[!.]$/,'');
+ const bits=[/[!?]$/.test(base)?base:base+'!'];
+ if(o.umbrella)bits.push(o.snow?'눈이 오니까 장갑도 챙겨요!':'비가 올 수 있으니까 우산도 챙겨요!');
+ if(o.diurnal)bits.push('아침저녁으로 쌀쌀하니까 겉옷 한 겹 더 챙겨요!');
+ return `지아야, 오늘 코디는 ${bits.join(' ')}`;
+}
+function showOutfit(c){
+ const box=$('outfitBtn'),txt=$('outfitText');
+ if(!box||!txt)return;
+ const o=outfitFor(c);todayOutfit=o;
+ if(!o){txt.textContent='날씨를 불러오면 오늘 코디를 알려 줄게요';box.setAttribute('aria-label','오늘의 코디 추천. 날씨를 아직 몰라요.');return}
+ const line=[o.main,...o.extras].join(' · ');
+ txt.textContent=line;
+ box.setAttribute('aria-label','오늘의 코디 추천: '+line.replace(/[^\uAC00-\uD7A3a-zA-Z0-9\s·+.,!?~%]/g,' ').replace(/\s+/g,' ').trim()+'. 눌러서 소리로 듣기');
+}
+$('outfitBtn').addEventListener('click',()=>jiaSpeak(outfitSpeech(todayOutfit)));
+
 $('refresh').addEventListener('click',fetchWeather);
 let wake=null,wakePending=false;
 function wakeStatus(label,cls=''){ $('wakeText').textContent=label;$('wakeDot').className='status-dot '+cls; }
