@@ -221,7 +221,7 @@ body,button,input,select,textarea{font-family:inherit}
  #dashboard .task-summary #remaining,#dashboard .task-summary #count{padding:min(4px,.6vh) 9px}
  #dashboard .edit{font-size:min(14px,2.3vh);padding:min(5px,.8vh) 10px}
  #dashboard .tasks .progress-track{height:min(7px,1.2vh)}
- #dashboard .task-list{gap:min(7px,1.2vh);grid-auto-rows:minmax(0,1fr);align-content:stretch}
+ #dashboard .task-list{gap:min(7px,1.2vh);grid-auto-rows:minmax(min-content,1fr);align-content:stretch}
  #dashboard .task-row{gap:min(6px,.8vw)}
  #dashboard .task{min-height:0;padding:min(6px,1vh) min(10px,1.2vw);border-radius:min(14px,2.2vh);row-gap:2px;column-gap:min(8px,1vw)}
  #dashboard .task .task-emoji{width:min(42px,6.4vh);font-size:min(26px,4.2vh);border-radius:min(10px,1.6vh)}
@@ -230,6 +230,14 @@ body,button,input,select,textarea{font-family:inherit}
  #dashboard .task .task-status{font-size:min(11px,1.8vh);line-height:1.1}
  #dashboard .task-bottom{font-size:min(11.5px,1.8vh)}
  #dashboard .speak-btn{width:min(40px,6.2vh);font-size:min(20px,3.2vh);border-radius:min(12px,1.9vh)}
+}
+/* ── 노트북·아이패드 가로(높이 701~820px)에서 시계 카드가 살짝 넘치던 부분 ── */
+@media (orientation:landscape) and (min-height:701px) and (max-height:820px){
+ #dashboard .clock{padding-bottom:min(16px,1.5vh)}
+ #dashboard .clock .time{font-size:clamp(65px,min(12vw,18.6vh),200px)}
+ #dashboard .clock .greeting{margin-bottom:clamp(4px,.8vh,9px)}
+ #dashboard .task-list{grid-auto-rows:minmax(min-content,1fr)}
+ #dashboard .task{min-height:0}
 }
 </style>
 </head>
