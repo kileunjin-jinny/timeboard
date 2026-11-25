@@ -169,6 +169,68 @@ body,button,input,select,textarea{font-family:inherit}
 .restore-box p{margin:0 0 9px;font-size:13px;color:#7a4f60;line-height:1.55}
 @media(max-height:520px) and (orientation:landscape){#dashboard .greeting{max-width:calc(100% - 76px);margin-top:3px;margin-bottom:4px;padding:4px 10px}#dashboard .clock{padding-bottom:8px}.admin-btn{min-height:30px;padding:4px 8px}}
 
+/* ── 태블릿 가로에서 한 화면에 여유 있게 (높이 521~700px: 1024×600·1280×620·960×540 등) ── */
+@media (orientation:landscape) and (min-height:521px) and (max-height:700px){
+ #shell{height:100dvh;min-height:0;overflow:hidden}
+ #shell>header{padding:min(5px,.9vh) clamp(10px,1.4vw,20px);gap:8px;border-bottom:1px solid #efdce3}
+ #shell>header .brand-icon{width:min(32px,5vh)}
+ #shell>header .brand-name{font-size:min(20px,3.1vh);line-height:1.15;letter-spacing:-.05em}
+ #shell>header .main-tabs{gap:5px}
+ #shell>header .tab{min-height:min(36px,6vh);padding:min(5px,.85vh) clamp(8px,1vw,14px);font-size:min(16px,2.6vh);border-radius:11px;gap:4px;line-height:1.1}
+ #shell>header .tab small{font-size:.7em;padding:2px 5px}
+ #shell>header .small-btn{min-height:min(34px,5.7vh);padding:min(4px,.75vh) 10px;font-size:min(14px,2.3vh)}
+ #shell>header .admin-btn{min-height:min(32px,5.4vh);padding:3px 10px}
+ #dashboard{padding:min(9px,1.4vh) clamp(11px,1.4vw,20px) min(5px,.8vh);gap:min(7px,1.1vh);grid-template-rows:minmax(0,1fr) auto}
+ #dashboard .layout{gap:min(9px,1.4vh);grid-template-columns:minmax(0,.98fr) minmax(0,1.02fr);grid-template-rows:minmax(0,1.1fr) minmax(0,1fr)}
+ #dashboard .panel{border-radius:min(22px,3.6vh)}
+ #shell footer{font-size:min(11.5px,1.8vh);line-height:1.25}
+ /* 시계·글귀 */
+ #dashboard .clock{padding:min(10px,1.6vh) min(12px,1.7vw);justify-content:center;gap:0}
+ #dashboard .clock .date{font-size:min(26px,4.1vh);line-height:1.2}
+ #dashboard .clock .time-line{gap:6px}
+ #dashboard .clock .time{font-size:min(108px,17vh);line-height:1.02}
+ #dashboard .clock .ampm{font-size:min(21px,3.3vh)}
+ #dashboard .clock .greeting{margin:min(6px,1vh) auto min(5px,.9vh);padding:min(6px,1vh) min(12px,1.6vw);gap:min(3px,.5vh);border-radius:min(14px,2.3vh);max-width:min(95%,calc(100% - min(116px,18vh)));box-shadow:none}
+ #dashboard .clock .greeting-label{font-size:min(13.5px,2.2vh);line-height:1.2}
+ #dashboard #greeting{font-size:min(20px,3.4vh);line-height:1.3}
+ #dashboard .clock-art{width:min(64px,10vh);opacity:.72}
+ /* 우리 동네 날씨 */
+ #dashboard .weather{padding:min(11px,1.7vh) min(13px,1.5vw);gap:min(6px,1vh)}
+ #dashboard .weather .section-top{gap:6px}
+ #dashboard .weather .section-title{font-size:min(25px,4.1vh);line-height:1.15}
+ #dashboard .weather .local{font-size:min(15px,2.4vh)}
+ #dashboard .weather-grid{gap:min(9px,1.5vh)}
+ #dashboard .weather .weather-day{padding:min(8px,1.4vh) min(11px,1vw);gap:min(3px,.6vh);border-radius:min(16px,2.6vh)}
+ #dashboard .weather .dayname{font-size:min(23px,3.8vh);line-height:1.15}
+ #dashboard .weather .day-date{font-size:min(13px,2.2vh)}
+ #dashboard .weather .weather-main{gap:min(8px,1.4vw)}
+ #dashboard .weather .weather-icon{font-size:min(39px,6.3vh);line-height:1.05}
+ #dashboard .weather .weather-type{font-size:min(21px,3.3vh);line-height:1.15}
+ #dashboard .weather .current-temp{font-size:min(18px,2.9vh);line-height:1.25;margin-top:0}
+ #dashboard .weather .range{font-size:min(25px,4vh);gap:min(6px,1vh)}
+ #dashboard .weather .range>span{padding:min(4px,.6vh) 2px;border-radius:min(9px,1.5vh)}
+ #dashboard .weather .range small{font-size:min(13px,2.1vh)}
+ #dashboard .weather .rain{font-size:min(15.5px,2.5vh);line-height:1.2}
+ #dashboard .weather .weather-foot{font-size:min(12.5px,2vh);min-height:0;padding-top:min(2px,.4vh)}
+ /* 오늘의 할 일 */
+ #dashboard .tasks{padding:min(12px,2vh) min(13px,1.6vw);gap:min(7px,1.1vh)}
+ #dashboard .tasks .section-top{gap:6px}
+ #dashboard .tasks .section-title{font-size:min(27px,4.5vh);line-height:1.15}
+ #dashboard .task-tools{gap:min(8px,1.2vw)}
+ #dashboard .task-summary{font-size:min(15px,2.5vh);gap:6px}
+ #dashboard .task-summary #remaining,#dashboard .task-summary #count{padding:min(4px,.6vh) 9px}
+ #dashboard .edit{font-size:min(14px,2.3vh);padding:min(5px,.8vh) 10px}
+ #dashboard .tasks .progress-track{height:min(7px,1.2vh)}
+ #dashboard .task-list{gap:min(7px,1.2vh);grid-auto-rows:minmax(0,1fr);align-content:stretch}
+ #dashboard .task-row{gap:min(6px,.8vw)}
+ #dashboard .task{min-height:0;padding:min(6px,1vh) min(10px,1.2vw);border-radius:min(14px,2.2vh);row-gap:2px;column-gap:min(8px,1vw)}
+ #dashboard .task .task-emoji{width:min(42px,6.4vh);font-size:min(26px,4.2vh);border-radius:min(10px,1.6vh)}
+ #dashboard .task .task-label{font-size:min(24px,3.9vh);line-height:1.16}
+ #dashboard .task .check{width:min(28px,4.6vh);height:min(28px,4.6vh);font-size:min(17px,2.8vh);border-radius:7px}
+ #dashboard .task .task-status{font-size:min(11px,1.8vh);line-height:1.1}
+ #dashboard .task-bottom{font-size:min(11.5px,1.8vh)}
+ #dashboard .speak-btn{width:min(40px,6.2vh);font-size:min(20px,3.2vh);border-radius:min(12px,1.9vh)}
+}
 </style>
 </head>
 <body>
@@ -329,18 +391,69 @@ let storageOK=true;
 function read(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){storageOK=false;return null}}
 function write(key,val){try{localStorage.setItem(key,JSON.stringify(val));return true}catch(e){storageOK=false;return false}}
 
-// ---------- 다정한 목소리로 읽어 주기 (TTS) ----------
+// ---------- 다정한 목소리로 읽어 주기 (TTS, 한국어 특화) ----------
 let koVoice=null;
-function pickKoVoice(){try{if(!('speechSynthesis' in window))return null;const list=window.speechSynthesis.getVoices()||[];return list.find(v=>/^ko[-_]?KR/i.test(v.lang))||list.find(v=>/^ko/i.test(v.lang))||null}catch(e){return null}}
-if('speechSynthesis' in window){koVoice=pickKoVoice();try{window.speechSynthesis.addEventListener('voiceschanged',()=>{koVoice=pickKoVoice()})}catch(e){}}
+const koSupported=()=>('speechSynthesis' in window);
+function koVoiceList(){try{if(!koSupported())return[];return (window.speechSynthesis.getVoices()||[]).filter(v=>/^ko([-_]|$)/i.test(String(v.lang||'')))}catch(e){return[]}}
+function scoreKoVoice(v){
+ const n=String(v.name||'').toLowerCase();let s=0;
+ if(/^ko[-_]kr$/i.test(String(v.lang||'')))s+=4;else if(/^ko/i.test(String(v.lang||'')))s+=2;
+ if(/yuna|sora|heami|injoon|hyunsu|jimin|korean|한국/.test(n))s+=6;
+ if(/google/.test(n))s+=5;
+ if(/samsung/.test(n))s+=5;
+ if(v.localService)s+=1;
+ if(/espeak|compact|novelty|zira|robot|whisper/.test(n))s-=8;
+ return s;
+}
+function chooseKoVoice(){
+ const ranked=koVoiceList().map(v=>[v,scoreKoVoice(v)]).sort((a,b)=>b[1]-a[1]);
+ return ranked.length?ranked[0][0]:null;
+}
+function pickKoVoice(){try{const v=chooseKoVoice();if(v)koVoice=v;return koVoice}catch(e){return koVoice}}
+(function warmKoVoices(){
+ if(!koSupported())return;
+ const sync=()=>{const v=chooseKoVoice();if(v)koVoice=v;};
+ sync();
+ try{window.speechSynthesis.getVoices()}catch(e){}
+ try{window.speechSynthesis.addEventListener('voiceschanged',sync,{passive:true})}catch(e){try{window.speechSynthesis.onvoiceschanged=sync}catch(_){}}
+ [150,500,1200,2500,5000].forEach(t=>setTimeout(sync,t));
+})();
+// 이모지·기호를 걷어 내 기호를 소리 내어 읽지 않게 함
+function cleanForSpeech(text){
+ const raw=String(text==null?'':text);
+ try{
+  return raw
+   .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{2190}-\u{21FF}\u{FE00}-\u{FE0F}\u{1F3FB}-\u{1F3FF}\u{200D}\u{20E3}\u{E000}-\u{E007F}]/gu,' ')
+   .replace(/[♡♥★☆♪♬※→←↑↓≈]/g,' ')
+   .replace(/[ \t]+/g,' ')
+   .replace(/\s*\n\s*/g,' ')
+   .trim();
+ }catch(e){return raw.replace(/[^\uAC00-\uD7A3\u3131-\u318Ea-zA-Z0-9\s.,!?~%]/g,' ').replace(/\s+/g,' ').trim()}
+}
+function speechChunks(text){
+ const clean=cleanForSpeech(text);if(!clean)return[];
+ const parts=clean.match(/[^.!?。？！~]+[.!?。？！~]*/g)||[clean];
+ const out=[];let buf='';
+ for(const p of parts){const s=p.trim();if(!s)continue;
+  if((buf+' '+s).trim().length<=110)buf=(buf?buf+' ':'')+s;
+  else{if(buf)out.push(buf);buf=s.length>110?'' : s;if(s.length>110)for(let i=0;i<s.length;i+=110)out.push(s.slice(i,i+110));}
+ }
+ if(buf)out.push(buf);
+ return out.length?out:[clean];
+}
 function jiaSpeak(text){try{
- if(!text||!('speechSynthesis' in window)||typeof window.SpeechSynthesisUtterance!=='function')return;
+ if(!text||!koSupported()||typeof window.SpeechSynthesisUtterance!=='function')return;
  let on=true;try{on=localStorage.getItem('jia-mission-sound-v1')!=='off'}catch(e){}
  if(!on)return;
+ const chunks=speechChunks(text);if(!chunks.length)return;
  const synth=window.speechSynthesis;try{synth.cancel()}catch(e){}
- const say=new SpeechSynthesisUtterance(String(text));say.lang='ko-KR';say.rate=.92;say.pitch=1.12;say.volume=1;
- const v=koVoice||pickKoVoice();if(v){say.voice=v;if(v.lang)say.lang=v.lang}
- try{synth.speak(say)}catch(e){}
+ const v=koVoice||pickKoVoice();
+ for(const chunk of chunks){
+  const say=new SpeechSynthesisUtterance(chunk);
+  say.lang='ko-KR';say.rate=.95;say.pitch=1;say.volume=1;
+  if(v){say.voice=v;if(v.lang)say.lang=v.lang}
+  try{synth.speak(say)}catch(e){}
+ }
 }catch(e){}}
 window.jiaSpeak=jiaSpeak;
 const formatter=new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
