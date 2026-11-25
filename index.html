@@ -459,7 +459,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <script>
 'use strict';
 const $=id=>document.getElementById(id), TZ='Asia/Seoul', KEY='family-dashboard-v1', WEATHER_KEY='family-dashboard-weather-v1';
-const DEFAULT=[['t1','🪥','양치하고 세수하기'],['t2','🎒','가방과 준비물 챙기기'],['t3','📚','책 읽기'],['t4','🧸','장난감 정리하기'],['t5','🧺','가족 함께 정리하기'],['t6','💗','서로 안아 주기']].map(([id,emoji,label])=>({id,emoji,label}));
+const DEFAULT=[['t3','📚','책 읽기'],['t7','⛺','텐트 정리하기'],['t6','💖','서로 안아 주기']].map(([id,emoji,label])=>({id,emoji,label}));
 let storageOK=true;
 function read(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){storageOK=false;return null}}
 function write(key,val){try{localStorage.setItem(key,JSON.stringify(val));return true}catch(e){storageOK=false;return false}}
@@ -714,7 +714,7 @@ window.jiaSync=(function(){
  }
  function clean(data){const out=Object.assign({},data);delete out._sync;return out}
 
- function defaultTasks(){return {tasks:[['🪥','양치하고 세수하기'],['🎒','가방과 준비물 챙기기'],['📚','책 읽기'],['🧸','장난감 정리하기'],['🧺','가족 함께 정리하기'],['💗','서로 안아 주기']].map(([emoji,label],i)=>({id:'t'+(i+1),emoji:emoji,label:label})),cycle:'',done:[]}}
+ function defaultTasks(){return {tasks:[['t3','📚','책 읽기'],['t7','⛺','텐트 정리하기'],['t6','💖','서로 안아 주기']].map(([id,emoji,label])=>({id:id,emoji:emoji,label:label})),cycle:'',done:[]}}
  function defaultMission(){const d=missionDay(),key=d+'-0';return {day:d,done:[true,true,true,true,false,false,false,false],earned:{[d]:[true,false]},designs:{[key]:12},targets:['08:30','21:00'],revoked:{},milestones:{},boards:[{filled:[[0,key]],completedAt:null}]}}
 
  function ensureSdk(){
