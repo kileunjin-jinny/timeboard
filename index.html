@@ -178,6 +178,19 @@ body,button,input,select,textarea{font-family:inherit}
 .sync-row input{flex:1;min-width:150px;background:#fdf1f5;border:1.5px solid #f0d3de;border-radius:11px;padding:9px 11px;font-size:14px;color:#5a3247;font-weight:700;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .sync-row .small-btn{min-height:38px;border-radius:11px;font-size:14px}
 
+/* ── 🔊 말소리 설정 (⚙️ 관리) ── */
+.voice-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:6px 0 4px}
+.voice-row label{font-size:13px;color:#875168;font-weight:800}
+.voice-row select{flex:1;min-width:170px;background:#fdf1f5;border:1.5px solid #f0d3de;border-radius:11px;padding:9px 11px;font-size:14px;color:#5a3247;font-weight:700;font-family:inherit}
+.voice-row select:focus-visible{outline:2.5px solid var(--accent);outline-offset:1px}
+.voice-list{display:flex;flex-direction:column;gap:6px;margin:8px 0 2px;max-height:190px;overflow:auto}
+.voice-item{display:flex;align-items:center;gap:8px;justify-content:space-between;background:#fdf6f9;border:1px solid #f3e0e7;border-radius:12px;padding:6px 8px 6px 11px}
+.voice-item .voice-name{flex:1;min-width:0;font-size:13px;font-weight:750;color:#5a3247;line-height:1.35;overflow-wrap:anywhere}
+.voice-item .voice-name small{font-weight:600;color:#96707f;font-size:12px}
+.voice-item.is-picked{background:#fdeef4;border-color:#eebfd0}
+.voice-item .voice-play{flex:none;min-height:34px;padding:4px 10px;border-radius:10px;font-size:13px;background:#fff;border:1.5px solid #eebfd0;color:#875168;font-weight:800}
+.voice-item .voice-play:active{background:#fce5ed}
+
 /* ── 비활성 탭은 절대 화면에 남지 않게 (겹침·잔상 방지) ── */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 #dashboard[hidden],#missionView[hidden],#missionWeather[hidden]{display:none!important;visibility:hidden!important;content-visibility:hidden}
@@ -394,6 +407,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
  <section class="admin-group"><h3>화면</h3>
   <div class="admin-btns"><button class="small-btn" id="install" hidden>홈 화면에 추가</button><button class="small-btn" id="full">⛶ 전체 화면</button><button class="small-btn" id="refresh">새로고침 ↻</button></div>
  </section>
+ <section class="admin-group"><h3>🔊 말소리 설정</h3>
+  <p class="admin-info">지아에게 읽어 줄 목소리를 고를 수 있어요. 고른 목소리는 이 기기에 저장돼요.</p>
+  <div class="voice-row"><label for="voiceSelect">목소리</label><select id="voiceSelect" aria-label="지아에게 읽어 줄 목소리 고르기"><option value="">자동 추천</option></select></div>
+  <div class="voice-list" id="voiceList" aria-label="목소리 미리 듣기"></div>
+  <p class="admin-info" id="voiceMsg" role="status"></p>
+ </section>
  <section class="admin-group"><h3>오늘의 할 일</h3>
   <div class="admin-btns"><button class="small-btn" id="edit">✎ 편집</button></div>
  </section>
@@ -430,13 +449,19 @@ let koVoice=null;
 const koSupported=()=>('speechSynthesis' in window);
 function koVoiceList(){try{if(!koSupported())return[];return (window.speechSynthesis.getVoices()||[]).filter(v=>/^ko([-_]|$)/i.test(String(v.lang||'')))}catch(e){return[]}}
 function scoreKoVoice(v){
- const n=String(v.name||'').toLowerCase();let s=0;
- if(/^ko[-_]kr$/i.test(String(v.lang||'')))s+=4;else if(/^ko/i.test(String(v.lang||'')))s+=2;
- if(/yuna|sora|heami|injoon|hyunsu|jimin|korean|한국/.test(n))s+=6;
- if(/google/.test(n))s+=5;
- if(/samsung/.test(n))s+=5;
- if(v.localService)s+=1;
- if(/espeak|compact|novelty|zira|robot|whisper/.test(n))s-=8;
+ const n=String(v.name||'').toLowerCase(), lang=String(v.lang||'');let s=0;
+ if(/^ko[-_]kr$/i.test(lang))s+=6;else if(/^ko/i.test(lang))s+=3;
+ // 자연스럽게 들리는 최신 음성(natural·neural·wavenet 계열)을 가장 앞에
+ if(/natural|neural|premium|enhanced|expressive/.test(n))s+=24;
+ if(/wavenet|studio|journey|polyglot/.test(n))s+=22;
+ // 온라인(스트리밍) 음성은 기기 내 오프라인 기계음보다 우선
+ if(/network|online|remote|cloud/.test(n))s+=20;
+ if(/google/.test(n))s+=15;
+ if(/sunhi|heami|yuna|sora|injoon|hyunsu|jimin|seoyeon|jihye|korean|한국/.test(n))s+=13;
+ if(/samsung/.test(n))s+=8;
+ if(v.localService===false)s+=10;else s-=2;
+ // 기기 내 오프라인 기계음(espeak·compact·pico 등)은 뒤로
+ if(/espeak|compact|novelty|zira|robot|whisper|pico|festival|flite/.test(n))s-=20;
  return s;
 }
 function chooseKoVoice(){
@@ -444,6 +469,74 @@ function chooseKoVoice(){
  return ranked.length?ranked[0][0]:null;
 }
 function pickKoVoice(){try{const v=chooseKoVoice();if(v)koVoice=v;return koVoice}catch(e){return koVoice}}
+// ---------- 🔊 말소리 설정: 고른 목소리 저장·불러오기 (⚙️ 관리) ----------
+const VOICE_KEY='jia-voice-uri-v1';
+const VOICE_SAMPLE='지아야, 오늘 공부도 화이팅! 다 했으면 눌러 봐!';
+let savedVoiceCache={key:'',voice:null};
+function readVoiceChoice(){try{return String(localStorage.getItem(VOICE_KEY)||'')}catch(e){return''}}
+function writeVoiceChoice(v){try{if(v)localStorage.setItem(VOICE_KEY,String(v));else localStorage.removeItem(VOICE_KEY);savedVoiceCache={key:'',voice:null};return true}catch(e){return false}}
+function voiceKey(v){return String((v&&(v.voiceURI||v.name))||'')}
+function savedKoVoice(){
+ const want=readVoiceChoice();if(!want)return null;
+ if(savedVoiceCache.key===want)return savedVoiceCache.voice;
+ const list=koVoiceList();
+ const hit=list.find(v=>String(v.voiceURI||'')===want)||list.find(v=>String(v.name||'')===want)||null;
+ if(list.length)savedVoiceCache={key:want,voice:hit};
+ return hit;
+}
+function voiceKind(v){return v&&v.localService===false?'온라인':'기기 내'}
+function voiceOptionText(v){return `${v.name} (${String(v.lang||'').replace('_','-')})`}
+function speakWithVoice(text,v,rate){
+ if(!koSupported()||typeof window.SpeechSynthesisUtterance!=='function')return false;
+ const synth=window.speechSynthesis;try{synth.cancel()}catch(e){}
+ const say=new SpeechSynthesisUtterance(String(text));
+ say.lang=(v&&v.lang)||'ko-KR';say.rate=rate||.95;say.pitch=1;say.volume=1;
+ if(v)say.voice=v;
+ try{synth.speak(say);return true}catch(e){return false}
+}
+function previewVoice(v){
+ const msg=$('voiceMsg');
+ if(!koSupported()||typeof window.SpeechSynthesisUtterance!=='function'){if(msg)msg.textContent='이 기기에서는 읽어 주기를 쓸 수 없어요. 크롬이나 삼성 인터넷에서 다시 해 봐 주세요.';return}
+ const use=v||savedKoVoice()||pickKoVoice();
+ if(speakWithVoice(VOICE_SAMPLE,use)&&msg)msg.textContent=use?`${use.name} 목소리로 읽어 줬어요.`:'자동으로 고른 목소리로 읽어 줬어요.';
+}
+function buildVoiceAdmin(){
+ const sel=$('voiceSelect'),list=$('voiceList'),msg=$('voiceMsg');
+ if(!sel||!list)return;
+ const voices=koVoiceList().map(v=>[v,scoreKoVoice(v)]).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+ const chosen=readVoiceChoice();const prev=sel.value;
+ sel.replaceChildren();
+ const auto=document.createElement('option');auto.value='';auto.textContent='자동 추천 (자연스러운 목소리)';sel.append(auto);
+ for(const v of voices){const o=document.createElement('option');o.value=voiceKey(v);o.textContent=voiceOptionText(v);sel.append(o)}
+ const picked=chosen&&voices.some(v=>voiceKey(v)===chosen)?chosen:(prev&&[...sel.options].some(o=>o.value===prev)?prev:'');
+ sel.value=picked;
+ list.replaceChildren();
+ const addRow=(v)=>{const row=document.createElement('div');row.className='voice-item'+(v&&voiceKey(v)===picked?' is-picked':'');
+  const name=document.createElement('span');name.className='voice-name';
+  if(v){name.textContent=v.name;const small=document.createElement('small');small.textContent=` · ${String(v.lang||'').replace('_','-')} · ${voiceKind(v)}`;name.append(small)}
+  else name.textContent='자동 추천 (가장 자연스러운 목소리)';
+  const b=document.createElement('button');b.type='button';b.className='small-btn voice-play';b.textContent='▶ 미리 듣기';b.setAttribute('aria-label',(v?v.name:'자동 추천')+' 목소리로 미리 듣기');
+  b.addEventListener('click',()=>previewVoice(v||null));
+  row.append(name,b);list.append(row)};
+ addRow(null);
+ for(const v of voices)addRow(v);
+ if(msg){
+  if(!voices.length)msg.textContent='기기에서 음성 목록을 불러오는 중이거나 기본 한국어 음성을 사용 중이에요';
+  else if(chosen&&!voices.some(v=>voiceKey(v)===chosen))msg.textContent='저장해 둔 목소리를 이 기기에서 찾지 못해서 자동 추천으로 읽어요. 쓰고 싶은 목소리를 다시 골라 주세요.';
+  else if(!msg.textContent||msg.dataset.stale)msg.textContent=`한국어 목소리 ${voices.length}개를 찾았어요. 마음에 드는 목소리를 눌러 미리 들어 보고 골라 주세요.`;
+  delete msg.dataset.stale;
+ }
+}
+function refreshVoiceAdmin(){try{koSupported()&&window.speechSynthesis.getVoices()}catch(e){}savedVoiceCache={key:'',voice:null};pickKoVoice();buildVoiceAdmin()}
+(function bindVoiceAdmin(){
+ const sel=document.getElementById('voiceSelect');if(!sel)return;
+ sel.addEventListener('change',()=>{const v=readVoiceChoice();const key=sel.value;writeVoiceChoice(key);const msg=$('voiceMsg');
+  if(key){const found=koVoiceList().find(x=>voiceKey(x)===key);if(msg)msg.textContent=(found?found.name:'고른 목소리')+'를 저장했어요. ▶ 미리 듣기로 확인해 보세요.';if(found)previewVoice(found)}
+  else{if(msg)msg.textContent='자동 추천으로 저장했어요. 기기에 가장 자연스러운 한국어 목소리를 써요.';previewVoice(null)}
+  buildVoiceAdmin();});
+ if(!koSupported())return;
+ try{window.speechSynthesis.addEventListener('voiceschanged',()=>{const d=$('admin');if(d&&(d.open||d.hasAttribute('open'))){const m=$('voiceMsg');if(m)m.dataset.stale='1';refreshVoiceAdmin()}},{passive:true})}catch(e){try{window.speechSynthesis.onvoiceschanged=()=>{const d=$('admin');if(d&&(d.open||d.hasAttribute('open')))refreshVoiceAdmin()}}catch(_){}}
+})();
 (function warmKoVoices(){
  if(!koSupported())return;
  const sync=()=>{const v=chooseKoVoice();if(v)koVoice=v;};
@@ -481,7 +574,7 @@ function jiaSpeak(text){try{
  if(!on)return;
  const chunks=speechChunks(text);if(!chunks.length)return;
  const synth=window.speechSynthesis;try{synth.cancel()}catch(e){}
- const v=koVoice||pickKoVoice();
+ const v=savedKoVoice()||koVoice||pickKoVoice();
  for(const chunk of chunks){
   const say=new SpeechSynthesisUtterance(chunk);
   say.lang='ko-KR';say.rate=.95;say.pitch=1;say.volume=1;
@@ -558,7 +651,7 @@ window.jiaHome={applyRemote:applyRemoteTasks,current:()=>state};
 // ---------- ⚙️ 관리 메뉴: 화면 설정, 보드, 백업 ----------
 const adminDialog=$('admin');
 function adminBoardText(){const info=$('adminBoardInfo');if(!info)return;const m=window.jiaMission;const s=m&&m.boardSummary?m.boardSummary():null;info.textContent=s?`지금 보드에 스티커 ${s.count}장이 붙어 있고, 지금까지 모은 스티커는 모두 ${s.total}장이에요.`:'스티커 보드를 불러오는 중이에요.'}
-function openAdmin(){adminBoardText();$('restoreBox').hidden=true;pendingRestore=null;$('backupStatus').textContent='';if(typeof adminDialog.showModal==='function')adminDialog.showModal();else adminDialog.setAttribute('open','');requestWake()}
+function openAdmin(){adminBoardText();refreshVoiceAdmin();$('restoreBox').hidden=true;pendingRestore=null;$('backupStatus').textContent='';if(typeof adminDialog.showModal==='function')adminDialog.showModal();else adminDialog.setAttribute('open','');requestWake()}
 $('adminOpen').addEventListener('click',openAdmin);
 $('adminClose').addEventListener('click',()=>adminDialog.close());
 $('adminNewBoard').addEventListener('click',()=>{const m=window.jiaMission;if(m&&m.canStartNewBoard&&m.canStartNewBoard()){adminDialog.close();m.startNewBoard();return}const s=m&&m.boardSummary?m.boardSummary():null;adminBoardText();$('adminBoardInfo').textContent+=' 100장을 다 모으면 새 보드를 만들 수 있어요.'+(s?` (지금 ${s.count}장)`:'')});
