@@ -593,10 +593,16 @@ window.jiaSync=(function(){
  function stickerCount(m){if(!m||!m.earned||typeof m.earned!=='object')return 0;let n=0;for(const g of Object.values(m.earned)){if(Array.isArray(g))n+=g.filter(Boolean).length}return n}
  function missionDay(){try{return new Date(Date.now()+5*3600000).toISOString().slice(0,10)}catch(e){return new Date().toISOString().slice(0,10)}}
  function withMeta(data){seq+=1;return Object.assign({},data,{_sync:{updatedAt:Date.now(),clientId:clientId,seq:seq}})}
+ function wireValue(key,value){
+  if(key!==KEY_MISSION||!value||typeof value!=='object')return value;
+  const out=Object.assign({},value);
+  if(Array.isArray(out.boards))out.boards=out.boards.map(b=>{const slots=Array.isArray(b&&b.slots)?b.slots:[],filled=[];slots.forEach((v,i)=>{if(typeof v==='string'&&v)filled.push([i,v])});return {filled:filled,completedAt:typeof (b&&b.completedAt)==='string'?b.completedAt:null}});
+  return out;
+ }
  function clean(data){const out=Object.assign({},data);delete out._sync;return out}
 
  function defaultTasks(){return {tasks:[['🪥','양치하고 세수하기'],['🎒','가방과 준비물 챙기기'],['📚','책 읽기'],['🧸','장난감 정리하기'],['🧺','가족 함께 정리하기'],['💗','서로 안아 주기']].map(([emoji,label],i)=>({id:'t'+(i+1),emoji:emoji,label:label})),cycle:'',done:[]}}
- function defaultMission(){const d=missionDay(),key=d+'-0';return {day:d,done:[true,true,true,true,false,false,false,false],earned:{[d]:[true,false]},designs:{[key]:12},targets:['08:30','21:00'],revoked:{},milestones:{},boards:[{slots:[key].concat(Array(99).fill(null)),completedAt:null}]}}
+ function defaultMission(){const d=missionDay(),key=d+'-0';return {day:d,done:[true,true,true,true,false,false,false,false],earned:{[d]:[true,false]},designs:{[key]:12},targets:['08:30','21:00'],revoked:{},milestones:{},boards:[{filled:[[0,key]],completedAt:null}]}}
 
  function ensureSdk(){
   if(window.firebase&&window.firebase.database)return Promise.resolve();
@@ -637,7 +643,7 @@ window.jiaSync=(function(){
   const localMission=readLocal(KEY_MISSION);
   const payload={};
   payload[KEY_TASKS]=withMeta(localTasks&&Array.isArray(localTasks.tasks)&&localTasks.tasks.length?{tasks:localTasks.tasks,cycle:typeof localTasks.cycle==='string'?localTasks.cycle:'',done:Array.isArray(localTasks.done)?localTasks.done:[]}:defaultTasks());
-  payload[KEY_MISSION]=withMeta(stickerCount(localMission)>0?localMission:defaultMission());
+  payload[KEY_MISSION]=withMeta(wireValue(KEY_MISSION,stickerCount(localMission)>0?localMission:defaultMission()));
   if(status!=='online')setStatus('online');
   if(mode==='poll'){
    fetch(DB+'/rooms/'+encodeURIComponent(room)+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>setStatus('offline'));
@@ -689,7 +695,7 @@ window.jiaSync=(function(){
 
  function publish(key,value){
   if(!ready||!value||typeof value!=='object'||KEYS.indexOf(key)<0)return;
-  const payload=withMeta(value);
+  const payload=withMeta(wireValue(key,value));
   if(mode==='poll'){
    fetch(DB+'/rooms/'+encodeURIComponent(room)+'/'+key+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>setStatus('offline'));
    return;
@@ -762,6 +768,19 @@ function save(){try{localStorage.setItem(key,JSON.stringify(state))}catch{$('sto
 // ---------- 가족 실시간 연결: 이 기기의 미션 기록 보내기/받기 ----------
 let applyingRemote=false;
 function publishState(){try{if(!applyingRemote&&window.jiaSync)window.jiaSync.publish(key,state)}catch(e){}}
+function readBoards(raw){
+ if(!Array.isArray(raw)||!raw.length)return null;
+ const out=[];
+ for(const b of raw){
+  if(!b||typeof b!=='object')return null;
+  let slots=null;
+  if(Array.isArray(b.slots)&&b.slots.length===size)slots=b.slots.map(v=>typeof v==='string'&&v?v:null);
+  else if(Array.isArray(b.filled)){slots=Array(size).fill(null);for(const pair of b.filled){if(!Array.isArray(pair))continue;const i=Number(pair[0]),v=pair[1];if(Number.isInteger(i)&&i>=0&&i<size&&typeof v==='string'&&v)slots[i]=v}}
+  if(!slots)return null;
+  out.push({slots:slots,completedAt:typeof b.completedAt==='string'?b.completedAt:null});
+ }
+ return out;
+}
 function ensureDesigns(){const counts=[0,0];for(const item of earnedList()){const k=stickerKey(item);if(!Number.isInteger(state.designs[k])||!stickerDesigns[state.designs[k]]||state.designs[k]<0)state.designs[k]=item.g*6+counts[item.g]%6;counts[item.g]++}}
 function applyRemote(remote){
  if(!remote||typeof remote!=='object')return;
@@ -775,7 +794,8 @@ function applyRemote(remote){
   if(remote.designs&&typeof remote.designs==='object'&&!Array.isArray(remote.designs))state.designs=remote.designs;
   if(remote.revoked&&typeof remote.revoked==='object'&&!Array.isArray(remote.revoked))state.revoked=remote.revoked;
   if(remote.milestones&&typeof remote.milestones==='object'&&!Array.isArray(remote.milestones))state.milestones=remote.milestones;
-  if(Array.isArray(remote.boards)&&remote.boards.length&&remote.boards.every(b=>b&&Array.isArray(b.slots)&&b.slots.length===size))state.boards=remote.boards.map(b=>({slots:b.slots.map(v=>typeof v==='string'?v:null),completedAt:typeof b.completedAt==='string'?b.completedAt:null}));
+  const boards=readBoards(remote.boards);
+  if(boards)state.boards=boards;
   ensureDesigns();placePending();save();render();update();
  }catch(e){}finally{applyingRemote=false}
 }
