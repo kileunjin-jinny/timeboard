@@ -396,6 +396,19 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 @media(orientation:landscape) and (max-height:650px){.study-sub{font-size:clamp(10px,1.1vw,14px);padding:0 .5em}:host([data-view="mission"]) .mission.has-study{padding-bottom:7px}:host([data-view="mission"]) .mission.has-study .art{max-height:clamp(48px,22vh,140px)}}
 @media(orientation:landscape) and (max-height:520px){.study-sub{font-size:11px}:host([data-view="mission"]) .mission.has-study{padding-top:21px;padding-bottom:5px}:host([data-view="mission"]) .mission.has-study .art{max-height:30vh;min-height:18px}}
 @media(orientation:portrait){.study-sub{font-size:clamp(11px,2.7vw,16px)}}
+/* ── ⏰ 조용한 중앙 팝업 알림 (소리 없음) ── */
+#timePopup{position:fixed;inset:0;margin:auto;width:min(420px,calc(100vw - 32px));max-height:calc(100dvh - 24px);overflow:auto;padding:clamp(24px,4.4vw,34px) clamp(20px,4.2vw,32px) clamp(18px,3.2vw,24px);border:none;border-radius:28px;background:radial-gradient(circle at 50% 0,#fffdf8 0,#fff0f5 48%,#f7ecfb 100%);box-shadow:0 18px 52px #6b3d5540;color:#5d374b;text-align:center;font-family:inherit}
+#timePopup::backdrop{background:#4b2f3e5c}
+#timePopup .time-popup-spark{display:block;font-size:clamp(20px,4.6vw,27px);line-height:1;letter-spacing:.28em;color:#e2a9c1;margin:0 0 8px;padding-left:.28em}
+#timePopup h2{margin:0 0 10px;font-size:clamp(23px,5.6vw,31px);line-height:1.26;color:#7b3f60;letter-spacing:-.035em;word-break:keep-all;overflow-wrap:anywhere}
+#timePopup p{margin:0 0 clamp(16px,3.4vw,22px);font-size:clamp(15px,4.2vw,20px);line-height:1.55;color:#6b4a5c;font-weight:750;word-break:keep-all;overflow-wrap:anywhere}
+#timePopup .time-popup-ok{width:100%;min-height:52px;border:none;border-radius:16px;background:#b96382;color:#fff;font-family:inherit;font-size:clamp(17px,4.4vw,21px);font-weight:900;box-shadow:0 4px 0 #9c4b69;letter-spacing:-.02em}
+#timePopup .time-popup-ok:active{transform:translateY(2px);box-shadow:0 2px 0 #9c4b69}
+#timePopup .time-popup-ok:focus-visible{outline:3px solid #7b3f60;outline-offset:3px}
+#timePopup[open]{animation:time-popup-in .3s cubic-bezier(.2,.9,.3,1.18) both}
+@keyframes time-popup-in{from{opacity:0;transform:translateY(16px) scale(.93)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){#timePopup[open]{animation:none}}
+@media(orientation:landscape) and (max-height:440px){#timePopup{padding:14px 20px 16px;border-radius:20px}#timePopup .time-popup-spark{display:none}#timePopup h2{font-size:21px;margin-bottom:6px}#timePopup p{font-size:15px;margin-bottom:12px}#timePopup .time-popup-ok{min-height:44px;font-size:16px}}
 </style><svg aria-hidden="true" width="0" height="0" style="position:absolute"><defs>
 <g id="girl"><path d="M49 66 Q35 25 63 15 Q80 3 104 15 Q132 25 122 69 L112 78 H59Z" fill="#88604e" stroke="#644839" stroke-width="2.5"/><circle cx="57" cy="54" r="8" fill="#ffd9c4"/><circle cx="113" cy="54" r="8" fill="#ffd9c4"/><path d="M59 39 Q60 20 85 24 Q110 24 112 42 V59 Q110 81 85 82 Q60 80 59 59Z" fill="#ffdfce" stroke="#9f715e" stroke-width="1.6"/><path d="M55 41 Q51 15 82 17 Q114 10 117 44 Q95 43 85 30 Q76 44 55 43Z" fill="#88604e"/><circle cx="74" cy="53" r="2.8" fill="#513c3d"/><circle cx="97" cy="53" r="2.8" fill="#513c3d"/><ellipse cx="67" cy="62" rx="6" ry="3.4" fill="#f5a7a7"/><ellipse cx="104" cy="62" rx="6" ry="3.4" fill="#f5a7a7"/><path d="M80 64 Q85 70 91 64" stroke="#9d5261" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M58 28 Q47 15 44 24 Q40 33 55 35 Q65 48 70 39 Q74 30 58 28" fill="#f6a7c2" stroke="#b8688a" stroke-width="1.5"/><circle cx="57" cy="31" r="3.8" fill="#e18aaa"/></g>
 <g id="spark" fill="#e9b95a"><path d="M0 -8 Q1 -1 8 0 Q1 1 0 8 Q-1 1 -8 0 Q-1 -1 0 -8"/></g>
@@ -426,6 +439,10 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   <div class="sync-row"><label for="syncRoom">방 코드</label><input type="text" id="syncRoom" value="jia-family-home-920115" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="가족 방 코드"><button type="button" class="small-btn primary" id="syncApply">적용</button></div>
   <p class="admin-info" id="syncMsg" role="status"></p>
  </section>
+ <section class="admin-group"><h3>⏰ 알림 팝업 미리보기</h3>
+  <p class="admin-info">지아 화면에 뜨는 조용한 팝업 알림이에요. 소리는 나지 않아요. 실제 알림은 마감 시간(기본 8:30 · 21:00)에 어떤 화면에서든 하루 한 번 떠요.</p>
+  <div class="admin-btns"><button type="button" class="small-btn" id="previewTime0830">🌅 8:30 유치원 출발</button><button type="button" class="small-btn" id="previewTime2100">🌙 9:00 잘 시간</button></div>
+ </section>
  <section class="admin-group"><h3>기록 백업</h3>
   <p class="admin-info">할 일과 스티커를 파일로 저장해 두고, 기기를 바꾸거나 새로 설치했을 때 다시 불러올 수 있어요.</p>
   <div class="admin-btns"><button type="button" class="small-btn" id="backupSave">⬇️ 백업 저장</button><button type="button" class="small-btn" id="backupLoad">⬆️ 백업 불러오기</button></div>
@@ -434,6 +451,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   <p id="backupStatus" role="status" class="admin-info"></p>
  </section>
 </dialog>
+<dialog id="timePopup" class="time-popup" aria-labelledby="timePopupTitle" aria-describedby="timePopupMsg"><span class="time-popup-spark" aria-hidden="true">✦ ✿ ✦</span><h2 id="timePopupTitle">🎒 8시 30분이에요!</h2><p id="timePopupMsg">지아야, 이제 유치원 출발할 시간이에요 ✨</p><button type="button" class="time-popup-ok" id="timePopupOk" autofocus>확인</button></dialog>
 <button id="night" type="button" aria-label="화면을 터치하여 1분 동안 대시보드 보기"></button>
 <dialog id="editor"><form id="editForm"><h2>우리 가족 할 일 바꾸기</h2><p>이모지와 할 일을 입력하세요. 매일 반복할 목록이에요. 최대 10개까지 추가할 수 있어요.</p><div id="editRows"></div><button class="secondary" type="button" id="addTask">＋ 할 일 추가</button><div id="editError" role="alert"></div><div class="dialog-actions"><button type="button" class="secondary" id="cancel">취소</button><button type="submit" class="primary">저장하기</button></div></form></dialog>
 <script>
@@ -957,4 +975,61 @@ $('switchRoutine').onclick=()=>{manualRoutine=manualRoutine===null?1-lastAutoRou
 try{if(window.jiaSync){window.jiaSync.onValue(key,applyRemote);window.jiaMissionState={applyRemote:applyRemote,state:()=>state}}updateStudyCard();}catch(e){}$('medal').innerHTML=stickerSVG(13);$('rewardClose').onclick=()=>{const d=$('rewardDialog');if(typeof d.close==='function')d.close();else d.removeAttribute('open')};render(true);update();save();select('home');setInterval(update,1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)update()});
 
 })();</script>
+<script>
+/* ---------- ⏰ 조용한 중앙 팝업 알림: 아침 유치원 출발 · 저녁 잘 시간 (소리 없음) ---------- */
+(()=>{
+ 'use strict';
+ const KEY='jia-time-popup-v1', MISSION_KEY='sparkle_daily_routine_v2', WINDOW_MIN=5;
+ const dialog=document.getElementById('timePopup');
+ if(!dialog)return;
+ const titleEl=document.getElementById('timePopupTitle'), msgEl=document.getElementById('timePopupMsg'), okEl=document.getElementById('timePopupOk');
+
+ function seoulNow(){
+  const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).map(x=>[x.type,x.value]));
+  return {date:p.year+'-'+p.month+'-'+p.day,minutes:Number(p.hour)*60+Number(p.minute),second:Number(p.second)};
+ }
+ function validTime(t){return typeof t==='string'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(t)}
+ // 마감 시간 설정(⚙️ 관리 → 미션 화면의 '몇 시까지 할까요?')을 그대로 따라간다. 비어 있으면 08:30 / 21:00.
+ function targets(){
+  let t=null;
+  try{const s=window.jiaMissionState&&window.jiaMissionState.state?window.jiaMissionState.state():null;if(s&&Array.isArray(s.targets))t=s.targets}catch(e){}
+  if(!t){try{const raw=JSON.parse(localStorage.getItem(MISSION_KEY)||'null');if(raw&&Array.isArray(raw.targets))t=raw.targets}catch(e){}}
+  return [validTime(t&&t[0])?t[0]:'08:30',validTime(t&&t[1])?t[1]:'21:00'];
+ }
+ function shownMap(){try{const v=JSON.parse(localStorage.getItem(KEY)||'{}');return v&&typeof v==='object'&&!Array.isArray(v)?v:{}}catch(e){return {}}}
+ function wasShown(date,key){const m=shownMap();return Array.isArray(m[date])&&m[date].indexOf(key)!==-1}
+ function markShown(date,key){const m=shownMap(),list=Array.isArray(m[date])?m[date].slice():[];if(list.indexOf(key)===-1)list.push(key);m[date]=list;const days=Object.keys(m).sort();while(days.length>30)delete m[days.shift()];try{localStorage.setItem(KEY,JSON.stringify(m))}catch(e){}}
+ function content(group,time){
+  const parts=String(time).split(':'),h=Number(parts[0]),m=Number(parts[1]),h12=h%12||12,minute=m?' '+m+'분':'';
+  if(group===0)return {title:'🎒 '+h12+'시'+minute+'이에요!',msg:'지아야, 이제 유치원 출발할 시간이에요 ✨'};
+  const night=h>=18||h<6;
+  return {title:'🌙 '+(night?'밤 ':'')+h12+'시'+minute+'이에요!',msg:'지아야, 이제 잘 시간이에요 💤'};
+ }
+ function openPopup(group,time){
+  const c=content(group,time);
+  titleEl.textContent=c.title;msgEl.textContent=c.msg;
+  if(!dialog.open){if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','')}
+  try{okEl.focus({preventScroll:true})}catch(e){try{okEl.focus()}catch(_){} }
+ }
+ function closePopup(){if(typeof dialog.close==='function')dialog.close();else dialog.removeAttribute('open')}
+ // 소리는 절대 내지 않는다: 오디오/TTS/비프 없이 화면 가운데 카드만 띄운다.
+ function check(){
+  const now=seoulNow(),list=targets();
+  for(let g=0;g<list.length;g++){
+   const time=list[g],p=time.split(':'),start=Number(p[0])*60+Number(p[1]),key=g+'|'+time;
+   if(now.minutes>=start&&now.minutes<start+WINDOW_MIN&&!wasShown(now.date,key)){markShown(now.date,key);openPopup(g,time);return}
+  }
+ }
+ okEl.addEventListener('click',closePopup);
+ const p0=document.getElementById('previewTime0830'),p1=document.getElementById('previewTime2100');
+ if(p0)p0.addEventListener('click',()=>openPopup(0,'08:30'));
+ if(p1)p1.addEventListener('click',()=>openPopup(1,'21:00'));
+ window.jiaTimePopup={check:check,preview:g=>openPopup(g?1:0,g?'21:00':'08:30'),close:closePopup,shown:shownMap,reset:()=>{try{localStorage.removeItem(KEY)}catch(e){}}};
+ check();
+ setInterval(check,1000);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)check()});
+ window.addEventListener('focus',check);
+ window.addEventListener('pageshow',check);
+})();
+</script>
 </body></html>
