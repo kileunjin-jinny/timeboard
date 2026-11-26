@@ -996,7 +996,7 @@ let manualRoutine=null,lastAutoRoutine=null;let page=0,toastTimer;function toast
 function safeSpeak(text){try{if(typeof window.jiaSpeak==='function')window.jiaSpeak(text)}catch(e){}}
 function cardLabel(el){const n=el.querySelector('strong');return n?n.textContent.trim():'미션'}
 // 공부하기 카드는 오늘 요일(한국 시간)에 맞는 과목을 함께 보여 준다.
-const STUDY_INDEX=6, STUDY_PLAN={0:['주말 자유 복습'],1:['소마셈','수학','알파블록스'],2:['소마셈','독해'],3:['소마셈','수학','알파블록스'],4:['소마셈','독해'],5:['소마셈','수학','알파블록스'],6:['주말 자유 복습']};
+const STUDY_INDEX=6, STUDY_PLAN={0:['주말 자유 복습','알파블록스'],1:['소마셈','수학','알파블록스'],2:['소마셈','독해','알파블록스'],3:['소마셈','수학','알파블록스'],4:['소마셈','독해','알파블록스'],5:['소마셈','수학','알파블록스'],6:['주말 자유 복습','알파블록스']};
 const WEEKDAY_NUM={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
 function seoulWeekday(){try{const n=WEEKDAY_NUM[new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Seoul',weekday:'short'}).format(new Date())];return Number.isInteger(n)?n:new Date().getDay()}catch(e){return new Date().getDay()}}
 function studySubjects(day){const d=Number.isInteger(day)?day:seoulWeekday();return STUDY_PLAN[d]||STUDY_PLAN[0]}
