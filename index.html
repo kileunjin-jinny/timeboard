@@ -710,8 +710,20 @@ function clockSpeech(now=new Date()){
 function speakClock(){jiaSpeak(clockSpeech())}
 $('quoteBox').addEventListener('click',speakQuote);
 $('clockBox').addEventListener('click',speakClock);
-// ---------- 오늘의 코디 추천 (최고·최저·현재 기온·강수·날씨 코드) ----------
-const OUTFIT_BANDS=[[4,'🧥 두꺼운 패딩 · 목도리 따뜻하게!'],[9,'🧥 도톰한 코트 · 경량패딩 + 긴팔'],[14,'🧶 얇은 니트 · 자켓 + 긴팔 긴바지'],[19,'👕 얇은 긴팔 · 맨투맨 + 긴바지'],[24,'👕 반팔이나 얇은 긴팔 + 가벼운 겉옷'],[99,'🩳 시원한 반팔 + 반바지']];
+// ---------- 오늘의 코디 추천 (체감 기온 → 겉옷·상의·하의·방한용품) ----------
+// feel(체감)만 보고 네 범주를 같은 규칙으로 고릅니다. 겉옷은 패딩/경량패딩/가디건/없음,
+// 상의는 두꺼운 긴팔/얇은 긴팔/반팔, 하의는 두꺼운 긴바지/얇은 긴바지/반바지,
+// 방한용품은 목도리·모자·장갑이고 비나 눈이 오면 우산을 덧붙여요.
+const OUTFIT_BANDS=[
+ {max:0,outer:'패딩',top:'두꺼운 긴팔',bottom:'두꺼운 긴바지',winter:['목도리','모자','장갑']},
+ {max:5,outer:'패딩',top:'두꺼운 긴팔',bottom:'두꺼운 긴바지',winter:['목도리','장갑']},
+ {max:10,outer:'경량패딩',top:'두꺼운 긴팔',bottom:'두꺼운 긴바지',winter:['목도리'],winterMax:7},
+ {max:15,outer:'가디건',top:'얇은 긴팔',bottom:'얇은 긴바지',winter:[]},
+ {max:20,outer:'',top:'얇은 긴팔',bottom:'얇은 긴바지',winter:[],diurnalOuter:'가디건'},
+ {max:24,outer:'',top:'반팔',bottom:'얇은 긴바지',winter:[],diurnalOuter:'가디건'},
+ {max:Infinity,outer:'',top:'반팔',bottom:'반바지',winter:[]}
+];
+const WINTER_ORDER=['목도리','모자','장갑'];
 const RAIN_CODES=[51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99],SNOW_CODES=[71,73,75,77,85,86];
 let todayOutfit=null;
 function outfitFor(c){
@@ -722,35 +734,49 @@ function outfitFor(c){
  if(typeof hi!=='number'||typeof lo!=='number'||!Number.isFinite(hi)||!Number.isFinite(lo))return null;
  const curTemp=(cur&&typeof cur.temperature_2m==='number'&&String(cur.time||'').startsWith(today))?cur.temperature_2m:null;
  const avg=(hi+lo)/2,feel=curTemp===null?avg:avg*.6+curTemp*.4;
- let main=OUTFIT_BANDS[OUTFIT_BANDS.length-1][1];
- for(const [limit,text] of OUTFIT_BANDS){if(feel<=limit){main=text;break}}
+ let band=OUTFIT_BANDS[OUTFIT_BANDS.length-1];
+ for(const b of OUTFIT_BANDS){if(feel<=b.max){band=b;break}}
  const snow=SNOW_CODES.includes(code),rain=RAIN_CODES.includes(code);
  const umbrella=(typeof pop==='number'&&pop>=50)||rain||snow;
  const diurnal=(hi-lo)>=10;
- // 겉옷 문구는 주 추천에 이미 겉옷이 없을 때만 붙여요.
- // 추운 날(체감 9° 이하)은 패딩·코트로 충분하고, 10~24°C에서 일교차가 10° 이상 클 때만 얇은 겉옷을 더해요.
- const hasLayer=/패딩|코트|자켓|겉옷/.test(main);
- const extraLayer=diurnal&&feel>9&&feel<=24&&!hasLayer;
- const extras=[];
- if(umbrella)extras.push(snow?'☃️ 눈이 와요, 장갑도 챙겨요!':'☂️ 우산도 챙겨요!');
- if(extraLayer)extras.push('🧥 얇은 겉옷 챙겨요!');
- return {main,extras,umbrella,diurnal,extraLayer,snow,feel,hi,lo,pop,code};
+ // 겉옷은 구간표를 따르고, 겉옷이 없는 15~24°C에서 일교차가 10° 이상이면 가디건을 하나 더해요.
+ const outer=!band.outer&&diurnal&&band.diurnalOuter?band.diurnalOuter:band.outer;
+ // 5~7°C 구간에서만 목도리를 더하고, 눈이 오면 장갑을 빠뜨리지 않아요(이미 있으면 그대로).
+ let winter=(band.winter||[]).slice();
+ if(typeof band.winterMax==='number'&&feel>band.winterMax)winter=[];
+ if(snow&&!winter.includes('장갑'))winter.push('장갑');
+ winter.sort((a,b)=>WINTER_ORDER.indexOf(a)-WINTER_ORDER.indexOf(b));
+ const icon=outer?'🧥':(band.top==='반팔'&&band.bottom==='반바지'?'🩳':'👕');
+ // 한 항목은 중간에서 끊기지 않게 묶고, 항목 사이에서만 줄이 바뀌도록 칸을 단단하게 만들어요.
+ const seg=t=>String(t).replace(/ /g,'\u00A0');
+ const parts=[seg(icon+' '+(outer||band.top))];
+ if(outer)parts.push(seg(band.top));
+ parts.push(seg(band.bottom));
+ if(winter.length)parts.push(seg(winter.join('·')));
+ if(umbrella)parts.push(seg(snow?'☃️ 우산':'☂️ 우산'));
+ return {outer,top:band.top,bottom:band.bottom,winter,umbrella,snow,diurnal,feel,hi,lo,pop,code,icon,text:parts.join(' · ')};
+}
+// 받침이 있으면 '이랑', 없으면 '랑'을 붙여요. (긴바지랑 / 목도리랑 / 장갑이랑)
+function withRang(word){
+ const s=String(word).trim(),code=s.slice(-1).charCodeAt(0);
+ const hasFinal=code>=0xAC00&&code<=0xD7A3?((code-0xAC00)%28)!==0:false;
+ return s+(hasFinal?'이랑':'랑');
 }
 function outfitSpeech(o){
  if(!o)return '지아야, 지금은 날씨를 몰라서 오늘 코디를 고르기 어려워. 날씨가 들어오면 다시 알려 줄게.';
- const clean=t=>String(t).replace(/\s*·\s*/g,', ').replace(/\s*\+\s*/g,', ');
- const base=clean(o.main).replace(/\s*[!.]$/,'');
- const bits=[/[!?]$/.test(base)?base:base+'!'];
- if(o.umbrella)bits.push(o.snow?'눈이 오니까 장갑도 챙겨요!':'비가 올 수 있으니까 우산도 챙겨요!');
- if(o.extraLayer)bits.push('아침저녁으로 쌀쌀하니까 얇은 겉옷 챙겨요!');
- return `지아야, 오늘 코디는 ${bits.join(' ')}`;
+ const core=[o.outer,o.top,o.bottom].filter(Boolean).join(', ');
+ const winter=(o.winter||[]).reduce((acc,w)=>acc?acc+'랑 '+w:w,'');
+ const outfit=[core,winter].filter(Boolean).join(', ');
+ const bits=[`지아야, 오늘 코디는 ${outfit}!`];
+ if(o.umbrella)bits.push(o.snow?'눈이 오니까 우산도 챙겨요!':'비가 올 수 있으니까 우산도 챙겨요!');
+ return bits.join(' ');
 }
 function showOutfit(c){
  const box=$('outfitBtn'),txt=$('outfitText');
  if(!box||!txt)return;
  const o=outfitFor(c);todayOutfit=o;
  if(!o){txt.textContent='날씨를 불러오면 오늘 코디를 알려 줄게요';box.setAttribute('aria-label','오늘의 코디 추천. 날씨를 아직 몰라요.');return}
- const line=[o.main,...o.extras].join(' · ');
+ const line=o.text;
  txt.textContent=line;
  box.setAttribute('aria-label','오늘의 코디 추천: '+line.replace(/[^\uAC00-\uD7A3a-zA-Z0-9\s·+.,!?~%]/g,' ').replace(/\s+/g,' ').trim()+'. 눌러서 소리로 듣기');
  fitOutfit();
