@@ -304,10 +304,31 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
  #dashboard .clock .time{font-size:clamp(65px,min(12vw,17.4vh),200px)}
  #dashboard .clock .greeting{margin-bottom:0;padding-top:min(4px,.6vh);padding-bottom:min(4px,.6vh)}
 }
+/* ── 📖 오늘의 속담 · 🈶 오늘의 한자 ── */
+.study-btn{display:inline-flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap;max-width:46vw;overflow:hidden;text-overflow:ellipsis}
+#dailyStudy{position:fixed;inset:0;margin:auto;width:min(430px,calc(100vw - 28px));max-height:calc(100dvh - 22px);overflow:auto;padding:clamp(20px,4vw,30px) clamp(19px,4vw,28px) clamp(16px,3vw,22px);border:none;border-radius:28px;background:radial-gradient(circle at 50% 0,#fffdf8 0,#fff1f6 46%,#f6ecfb 100%);box-shadow:0 18px 52px #6b3d5540;color:#5d374b;text-align:center;font-family:inherit}
+#dailyStudy::backdrop{background:#4b2f3e5c}
+#dailyStudy .study-kicker{display:block;font-size:clamp(13px,3.3vw,16px);font-weight:900;letter-spacing:.02em;color:#b4638a;margin:0 0 8px}
+#dailyStudy .study-glyph{font-size:clamp(70px,16vw,104px);line-height:1.02;font-weight:800;color:#7b3f60;margin:2px 0 2px;font-family:"Jua","Malgun Gothic",sans-serif}
+#dailyStudy .study-reading{margin:0 0 10px;font-size:clamp(17px,4.4vw,22px);font-weight:900;color:#9a4d6e;letter-spacing:-.01em}
+#dailyStudy .study-title{margin:0 0 9px;font-size:clamp(21px,5vw,28px);line-height:1.32;color:#7b3f60;letter-spacing:-.03em;word-break:keep-all;overflow-wrap:anywhere}
+#dailyStudy .study-desc{margin:0 0 10px;font-size:clamp(15px,3.9vw,19px);line-height:1.55;color:#6b4a5c;font-weight:750;word-break:keep-all;overflow-wrap:anywhere}
+#dailyStudy .study-words{margin:0 0 clamp(14px,3vw,18px);padding:8px 12px;border-radius:14px;background:#fff9fc;border:1px dashed #e7c4d4;font-size:clamp(13px,3.4vw,16px);color:#8a5b74;font-weight:850;line-height:1.4;word-break:keep-all}
+#dailyStudy .study-btns{display:flex;gap:8px}
+#dailyStudy .study-btns button{flex:1;min-height:52px;border:none;border-radius:16px;font-family:inherit;font-weight:900;font-size:clamp(16px,4.2vw,20px);letter-spacing:-.02em;cursor:pointer}
+#dailyStudy .study-speak{background:#fff;border:2px solid #e7b7c9;color:#9a4767;box-shadow:0 3px 0 #f0dae2}
+#dailyStudy .study-speak:active{transform:translateY(2px);box-shadow:0 1px 0 #f0dae2}
+#dailyStudy .study-close{background:#b96382;color:#fff;box-shadow:0 4px 0 #9c4b69}
+#dailyStudy .study-close:active{transform:translateY(2px);box-shadow:0 2px 0 #9c4b69}
+#dailyStudy button:focus-visible{outline:3px solid #7b3f60;outline-offset:3px}
+#dailyStudy[open]{animation:time-popup-in .3s cubic-bezier(.2,.9,.3,1.18) both}
+@media(prefers-reduced-motion:reduce){#dailyStudy[open]{animation:none}}
+@media(max-width:430px){#shell>header .study-btn{font-size:11.5px;padding:6px 8px;gap:2px}}
+@media(orientation:landscape) and (max-height:440px){#dailyStudy{padding:12px 18px 14px;border-radius:20px}#dailyStudy .study-kicker{margin-bottom:4px;font-size:12px}#dailyStudy .study-glyph{font-size:52px;margin:0}#dailyStudy .study-reading{margin-bottom:4px;font-size:16px}#dailyStudy .study-title{font-size:19px;margin-bottom:5px}#dailyStudy .study-desc{font-size:14px;margin-bottom:6px;line-height:1.4}#dailyStudy .study-words{padding:5px 10px;margin-bottom:8px;font-size:12px}#dailyStudy .study-btns button{min-height:42px;font-size:15px}}
 </style>
 </head>
 <body>
-<div id="shell"><header><div class="brand"><div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 29 32 10 54 29v24a5 5 0 0 1-5 5H15a5 5 0 0 1-5-5z" fill="#fff5e8" stroke="#ba8193" stroke-width="2.4" stroke-linejoin="round"/><path d="M5 31 32 7 59 31" fill="none" stroke="#c77f98" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M32 47c-3-3-13-8-10-14 2-4 8-4 10 1 2-5 8-5 10-1 3 6-7 11-10 14z" fill="#df94ae"/></svg></div><div><div class="brand-name">우리 집 ♡</div><div class="brand-sub">매일매일, 사랑을 한 스푼 ♡</div></div></div><nav class="main-tabs" aria-label="화면 선택"><button type="button" class="tab active" data-view="home" aria-pressed="true">🏠 <span>우리 집</span></button><button type="button" class="tab" data-view="mission" aria-pressed="false"><span id="missionNavTitle">☀️ 아침 미션</span><small id="missionNavCount">0/4</small></button><button type="button" class="tab" data-view="album" aria-pressed="false">🎀 <span>스티커북</span><small id="albumNavCount">0장</small></button></nav><div class="tools"><button class="small-btn admin-btn" id="adminOpen" aria-haspopup="dialog" aria-label="관리 메뉴 열기">⚙️ 관리</button></div></header><section id="missionWeather" aria-label="현재 시각과 춘천 우두동 날씨" class="mission-weather" hidden>
+<div id="shell"><header><div class="brand"><div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 29 32 10 54 29v24a5 5 0 0 1-5 5H15a5 5 0 0 1-5-5z" fill="#fff5e8" stroke="#ba8193" stroke-width="2.4" stroke-linejoin="round"/><path d="M5 31 32 7 59 31" fill="none" stroke="#c77f98" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M32 47c-3-3-13-8-10-14 2-4 8-4 10 1 2-5 8-5 10-1 3 6-7 11-10 14z" fill="#df94ae"/></svg></div><div><div class="brand-name">우리 집 ♡</div><div class="brand-sub">매일매일, 사랑을 한 스푼 ♡</div></div></div><nav class="main-tabs" aria-label="화면 선택"><button type="button" class="tab active" data-view="home" aria-pressed="true">🏠 <span>우리 집</span></button><button type="button" class="tab" data-view="mission" aria-pressed="false"><span id="missionNavTitle">☀️ 아침 미션</span><small id="missionNavCount">0/4</small></button><button type="button" class="tab" data-view="album" aria-pressed="false">🎀 <span>스티커북</span><small id="albumNavCount">0장</small></button></nav><div class="tools"><button class="small-btn study-btn" id="dailyStudyOpen" aria-haspopup="dialog" aria-label="오늘의 속담 또는 한자 보기">📖 오늘의 속담</button><button class="small-btn admin-btn" id="adminOpen" aria-haspopup="dialog" aria-label="관리 메뉴 열기">⚙️ 관리</button></div></header><section id="missionWeather" aria-label="현재 시각과 춘천 우두동 날씨" class="mission-weather" hidden>
 <div class="strip-clock"><div id="stripDate">날짜 확인 중</div><div id="stripTime">--:--</div></div>
 <div class="strip-day strip-today"><div class="strip-day-head"><strong>오늘</strong><span id="stripD0"></span><span>춘천 우두동</span></div><div class="strip-main"><span class="strip-icon" id="stripI0">☁️</span><div><div class="strip-condition" id="stripW0">정보 없음</div><div class="strip-current" id="stripC0">현재 --°</div></div></div><div class="strip-stats"><span class="strip-high">최고 <b id="stripHi0">--°</b></span><span class="strip-low">최저 <b id="stripLo0">--°</b></span><span id="stripR0">강수 --%</span></div></div>
 <div class="strip-day strip-tomorrow"><div class="strip-day-head"><strong>내일</strong><span id="stripD1"></span></div><div class="strip-main"><span class="strip-icon" id="stripI1">☁️</span><div class="strip-condition" id="stripW1">정보 없음</div></div><div class="strip-stats"><span class="strip-high">최고 <b id="stripHi1">--°</b></span><span class="strip-low">최저 <b id="stripLo1">--°</b></span><span id="stripR1">강수 --%</span></div></div>
@@ -512,6 +533,15 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 @media(orientation:landscape) and (max-height:440px){#timePopup{padding:14px 20px 16px;border-radius:20px}#timePopup .time-popup-spark{display:none}#timePopup h2{font-size:21px;margin-bottom:6px}#timePopup p{font-size:15px;margin-bottom:12px}#timePopup .time-popup-ok{min-height:44px;font-size:16px}}
 </style>
 <dialog id="timePopup" class="time-popup" aria-labelledby="timePopupTitle" aria-describedby="timePopupMsg"><span class="time-popup-spark" aria-hidden="true">✦ ✿ ✦</span><h2 id="timePopupTitle">🎒 8시 30분이에요!</h2><p id="timePopupMsg">지아야, 이제 유치원 출발할 시간이에요 ✨</p><button type="button" class="time-popup-ok" id="timePopupOk" autofocus>확인</button></dialog>
+<dialog id="dailyStudy" class="study-popup" aria-label="오늘의 속담">
+<span class="study-kicker" id="studyKicker">📖 오늘의 속담</span>
+<div class="study-glyph" id="studyGlyph" hidden aria-hidden="true">日</div>
+<p class="study-reading" id="studyReading" hidden></p>
+<h2 class="study-title" id="studyTitle">가는 말이 고와야 오는 말이 곱다</h2>
+<p class="study-desc" id="studyDesc">내가 예쁘게 말하면 친구도 예쁘게 말해요.</p>
+<p class="study-words" id="studyWords" hidden></p>
+<div class="study-btns"><button type="button" class="study-speak" id="studySpeak">🔊 읽어주기</button><button type="button" class="study-close" id="studyClose" autofocus>닫기</button></div>
+</dialog>
 <button id="night" type="button" aria-label="화면을 터치하여 1분 동안 대시보드 보기"></button>
 <dialog id="editor"><form id="editForm"><h2>우리 가족 할 일 바꾸기</h2><p>이모지와 할 일을 입력하세요. 매일 반복할 목록이에요. 최대 10개까지 추가할 수 있어요.</p><div id="editRows"></div><button class="secondary" type="button" id="addTask">＋ 할 일 추가</button><div id="editError" role="alert"></div><div class="dialog-actions"><button type="button" class="secondary" id="cancel">취소</button><button type="submit" class="primary">저장하기</button></div></form></dialog>
 <script>
@@ -1206,6 +1236,127 @@ try{if(window.jiaSync){window.jiaSync.onValue(key,applyRemote);window.jiaMission
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)check()});
  window.addEventListener('focus',check);
  window.addEventListener('pageshow',check);
+})();
+</script>
+<script>
+/* ---------- 📖 오늘의 속담 · 🈶 오늘의 한자 (한국 시간 기준 하루씩 번갈아) ---------- */
+(()=>{
+ 'use strict';
+ /* 속담 30개: 7살이 이해하기 쉬운 기초 속담과 쉬운 뜻 */
+ const PROVERBS=[
+  {t:'가는 말이 고와야 오는 말이 곱다',m:'내가 예쁘게 말하면 친구도 예쁘게 말해요.'},
+  {t:'티끌 모아 태산',m:'작은 것도 하나씩 모으면 아주 커져요.'},
+  {t:'백지장도 맞들면 낫다',m:'혼자 하는 것보다 같이 하면 더 쉬워요.'},
+  {t:'천 리 길도 한 걸음부터',m:'멀리 가는 길도 한 걸음부터 시작해요.'},
+  {t:'웃는 얼굴에 침 못 뱉는다',m:'웃으면 모두가 나에게 다정해져요.'},
+  {t:'시작이 반이다',m:'용기 내서 시작하면 벌써 반은 한 거예요.'},
+  {t:'원숭이도 나무에서 떨어진다',m:'잘하는 사람도 가끔은 실수해요.'},
+  {t:'낮말은 새가 듣고 밤말은 쥐가 듣는다',m:'나쁜 말은 꼭 어딘가에서 들켜요.'},
+  {t:'세 살 버릇 여든까지 간다',m:'어릴 때 만든 좋은 습관은 오래오래 남아요.'},
+  {t:'우물 안 개구리',m:'넓은 세상을 모르고 자기 생각만 하는 사람이에요.'},
+  {t:'고생 끝에 낙이 온다',m:'힘든 일이 지나가면 즐거운 일이 와요.'},
+  {t:'하나를 보면 열을 안다',m:'하나만 봐도 많은 걸 알 수 있어요.'},
+  {t:'발 없는 말이 천 리 간다',m:'말은 아주 빠르게 퍼져요. 그래서 말을 조심해요.'},
+  {t:'열 번 찍어 안 넘어가는 나무 없다',m:'여러 번 해 보면 꼭 할 수 있어요.'},
+  {t:'소 잃고 외양간 고친다',m:'일이 잘못된 다음에야 준비해요.'},
+  {t:'등잔 밑이 어둡다',m:'가까이 있는 걸 오히려 못 찾을 때가 있어요.'},
+  {t:'개구리 올챙이 적 생각 못 한다',m:'자기가 어렸을 때를 잊고 잘난 척하면 안 돼요.'},
+  {t:'말 한마디에 천 냥 빚 갚는다',m:'좋은 말 한마디가 큰 힘이 돼요.'},
+  {t:'호랑이도 제 말 하면 온다',m:'그 사람 이야기를 하면 정말 그 사람이 와요.'},
+  {t:'서당 개 삼 년이면 풍월을 읊는다',m:'옆에서 오래 보면 저절로 배워요.'},
+  {t:'빈 수레가 요란하다',m:'잘 모르는 사람이 더 크게 떠들어요.'},
+  {t:'그림의 떡',m:'보기만 하고 먹거나 가질 수는 없는 거예요.'},
+  {t:'누워서 떡 먹기',m:'아주아주 쉬운 일이에요.'},
+  {t:'하늘의 별 따기',m:'정말 하기 어려운 일이에요.'},
+  {t:'콩 심은 데 콩 나고 팥 심은 데 팥 난다',m:'좋은 일을 하면 좋은 일이 생겨요.'},
+  {t:'돌다리도 두들겨 보고 건너라',m:'쉬운 일도 한 번 더 살펴보면 좋아요.'},
+  {t:'고래 싸움에 새우 등 터진다',m:'큰 사람들이 싸우면 작은 사람이 다쳐요.'},
+  {t:'아는 길도 물어 가라',m:'잘 알아도 한 번 더 물으면 실수하지 않아요.'},
+  {t:'엎질러진 물은 다시 담기 어렵다',m:'한 번 지나간 일은 되돌릴 수 없어요.'},
+  {t:'세월이 약이다',m:'힘든 일도 시간이 지나면 조금씩 나아져요.'}
+ ];
+ /* 기초 한자 30자: 8급 상형·기초 한자를 그림처럼 설명 */
+ const HANJA=[
+  {c:'日',r:'날 일',d:'동그란 해가 반짝 떠오른 모양을 본뜬 글자예요!',w:'일요일, 생일'},
+  {c:'月',r:'달 월',d:'휘어지는 달 모양을 본뜬 글자예요!',w:'월요일, 정월'},
+  {c:'火',r:'불 화',d:'불꽃이 활활 타오르는 모양을 본뜬 글자예요!',w:'화요일, 화산'},
+  {c:'水',r:'물 수',d:'물이 졸졸 흐르는 모양에 물방울을 더한 글자예요!',w:'수요일, 수영'},
+  {c:'木',r:'나무 목',d:'가지와 뿌리가 있는 나무 모양을 본뜬 글자예요!',w:'목요일, 목수'},
+  {c:'金',r:'쇠 금',d:'반짝반짝 빛나는 쇠와 금을 나타내는 글자예요!',w:'금요일, 금색'},
+  {c:'土',r:'흙 토',d:'땅 위에 흙이 도톰하게 쌓인 모양이에요!',w:'토요일, 토양'},
+  {c:'山',r:'뫼 산',d:'뾰족뾰족 봉우리가 솟아 있는 산 모양이에요!',w:'산, 등산'},
+  {c:'川',r:'내 천',d:'물이 세 갈래로 흐르는 내 모양이에요!',w:'개천, 하천'},
+  {c:'人',r:'사람 인',d:'사람이 두 발로 서 있는 모양을 본뜬 글자예요!',w:'인사, 인형'},
+  {c:'大',r:'큰 대',d:'팔을 활짝 벌린 사람이라 아주 커 보여요!',w:'대문, 대통령'},
+  {c:'小',r:'작을 소',d:'아주 작은 것을 톡 그려 놓은 글자예요!',w:'작은, 소형'},
+  {c:'中',r:'가운데 중',d:'긴 막대기 한가운데를 뚫은 모양이에요!',w:'중심, 중간'},
+  {c:'上',r:'위 상',d:'아래 선 위에 점을 찍어 위쪽을 나타내요!',w:'위, 지상'},
+  {c:'下',r:'아래 하',d:'선 아래에 점을 찍어 아래쪽을 나타내요!',w:'아래, 지하'},
+  {c:'門',r:'문 문',d:'두 짝으로 된 대문 모양을 본뜬 글자예요!',w:'문, 대문'},
+  {c:'口',r:'입 구',d:'동그란 입 모양을 본뜬 글자예요!',w:'입, 출구'},
+  {c:'目',r:'눈 목',d:'눈을 옆으로 눕혀 그린 모양이에요!',w:'눈, 목표'},
+  {c:'耳',r:'귀 이',d:'귀 모양을 그대로 본뜬 글자예요!',w:'귀, 이비인후과'},
+  {c:'手',r:'손 수',d:'손가락 다섯 개가 펼쳐진 손 모양이에요!',w:'손, 세수'},
+  {c:'足',r:'발 족',d:'발과 발가락 모양을 본뜬 글자예요!',w:'발, 축구'},
+  {c:'心',r:'마음 심',d:'쿵쿵 뛰는 심장 모양을 본뜬 글자예요!',w:'마음, 중심'},
+  {c:'母',r:'어머니 모',d:'아기를 돌보는 어머니 모양을 본뜬 글자예요!',w:'어머니, 고모'},
+  {c:'父',r:'아버지 부',d:'도끼를 든 아버지 모양을 본뜬 글자예요!',w:'아버지, 부모'},
+  {c:'子',r:'아들 자',d:'팔을 벌리고 있는 아기 모양이에요!',w:'아들, 아기'},
+  {c:'王',r:'임금 왕',d:'하늘과 땅과 사람을 꿰뚫는 임금님이에요!',w:'왕, 왕관'},
+  {c:'雨',r:'비 우',d:'하늘에서 물방울이 뚝뚝 떨어지는 모양이에요!',w:'비, 우산'},
+  {c:'花',r:'꽃 화',d:'풀과 꽃이 피어나는 모양을 그린 글자예요!',w:'꽃, 화분'},
+  {c:'一',r:'한 일',d:'막대기 하나를 쭉 그은 모양이에요!',w:'하나, 일등'},
+  {c:'二',r:'두 이',d:'막대기 두 개를 나란히 그었어요!',w:'둘, 이층'}
+ ];
+ const CYCLE=30, ANCHOR='2026-11-27'; /* 이날은 속담 1번, 다음 날은 한자 1번부터 시작 */
+ let current=null;
+ const dialog=document.getElementById('dailyStudy'), openBtn=document.getElementById('dailyStudyOpen');
+ if(!dialog||!openBtn)return;
+ const kickerEl=document.getElementById('studyKicker'), glyphEl=document.getElementById('studyGlyph'),
+       readEl=document.getElementById('studyReading'), titleEl=document.getElementById('studyTitle'),
+       descEl=document.getElementById('studyDesc'), wordsEl=document.getElementById('studyWords'),
+       speakEl=document.getElementById('studySpeak'), closeEl=document.getElementById('studyClose');
+ function dayNumber(key){const p=String(key).split('-').map(Number);return Math.floor(Date.UTC(p[0],p[1]-1,p[2])/86400000)}
+ function seoulKey(){const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).map(x=>[x.type,x.value]));return p.year+'-'+p.month+'-'+p.day}
+ function mod(n,m){return ((n%m)+m)%m}
+ function todayPick(){const diff=dayNumber(seoulKey())-dayNumber(ANCHOR),i=mod(Math.floor(diff/2),CYCLE);return diff%2===0?{kind:'proverb',...PROVERBS[i]}:{kind:'hanja',...HANJA[i]}}
+ function labelOf(pick){return pick.kind==='proverb'?'📖 오늘의 속담':'🈶 오늘의 한자'}
+ function speechOf(pick){
+  if(pick.kind==='proverb')return '오늘의 속담! '+pick.t+'. '+pick.m;
+  return '오늘의 한자! '+pick.r+'. '+pick.d+' '+pick.w+' 같은 낱말을 함께 익혀 봐요.';
+ }
+ function paint(forced){
+  const pick=(forced&&forced.kind)?forced:todayPick();
+  current=pick;
+  openBtn.textContent=labelOf(todayPick());
+  kickerEl.textContent=labelOf(pick);
+  if(pick.kind==='hanja'){
+   glyphEl.hidden=false;glyphEl.textContent=pick.c;
+   readEl.hidden=false;readEl.textContent=pick.r;
+   titleEl.hidden=true;
+   descEl.textContent=pick.d;
+   wordsEl.hidden=false;wordsEl.textContent='낱말 예시 · '+pick.w;
+   dialog.setAttribute('aria-label','오늘의 한자 '+pick.c+', '+pick.r);
+  }else{
+   glyphEl.hidden=true;glyphEl.textContent='';
+   readEl.hidden=true;readEl.textContent='';
+   titleEl.hidden=false;titleEl.textContent=pick.t;
+   descEl.textContent=pick.m;
+   wordsEl.hidden=true;wordsEl.textContent='';
+   dialog.setAttribute('aria-label','오늘의 속담 '+pick.t);
+  }
+  return pick;
+ }
+ function open(forced){const pick=paint(forced);if(!dialog.open){if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','')}try{closeEl.focus({preventScroll:true})}catch(e){try{closeEl.focus()}catch(_){}}}
+ function close(){if(typeof dialog.close==='function')dialog.close();else dialog.removeAttribute('open')}
+ openBtn.addEventListener('click',()=>open());
+ closeEl.addEventListener('click',close);
+ speakEl.addEventListener('click',()=>{try{window.jiaSpeak(speechOf(current||todayPick()))}catch(e){}});
+ dialog.addEventListener('close',()=>{try{openBtn.focus({preventScroll:true})}catch(e){}});
+ paint();
+ setInterval(()=>{if(!dialog.open)paint()},30000);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)paint()});
+ window.jiaDailyStudy={pick:todayPick,open:open,close:close,speech:()=>speechOf(todayPick()),proverbs:PROVERBS,hanja:HANJA,dayNumber:dayNumber,label:p=>labelOf(p||todayPick()),speechOf:speechOf};
 })();
 </script>
 </body></html>
